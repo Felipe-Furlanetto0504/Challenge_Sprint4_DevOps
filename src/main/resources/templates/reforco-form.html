@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{reforco.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{reforco.eyebrow}">PREVENÇÃO QUE CONTINUA</div>
+          <h1 th:text="#{reforco.titulo}">Registrar reforço</h1>
+          <p th:text="${dose.nome} + ' · ' + ${dose.animal}">V10 · Bento</p>
+        </div>
+      </header>
+      <section class="panel form-panel">
+        <p class="form-tip" th:text="#{reforco.dica}">O registro anterior será preservado.</p>
+        <form th:action="@{/vacinas/{id}/reforco(id=${dose.id})}" method="post" th:object="${form}">
+          <div th:replace="~{layout :: errors}"></div>
+          <div class="form-grid">
+            <label><span th:text="#{reforco.data}">Data de aplicação do reforço</span>
+              <input type="date" th:field="*{data}" required th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.intervalo}">Intervalo até a próxima dose (meses)</span>
+              <input type="number" th:field="*{intervalo}" required min="1" max="60" th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.local-vacinacao}">Local de vacinação</span>
+              <input type="text" th:field="*{local}" required maxlength="100" th:errorclass="invalido"></label>
+          </div>
+          <div class="form-actions">
+            <a class="button secondary" th:href="@{/vacinas}" th:text="#{acao.voltar}">Voltar</a>
+            <button class="button" th:text="#{reforco.salvar}">Registrar e calcular próxima dose →</button>
+          </div>
+        </form>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{consultas.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{consultas.eyebrow}">CADA ENCONTRO IMPORTA</div>
+          <h1 th:text="#{consultas.titulo}">Consultas</h1>
+          <p th:text="#{consultas.subtitulo}">Do agendamento ao atendimento, acompanhe cada etapa.</p>
+        </div>
+        <a class="button" th:href="@{/consultas/nova}" th:text="#{acao.agendar}">+ Agendar consulta</a>
+      </header>
+      <ol class="fluxo" th:aria-label="#{consultas.fluxo.rotulo}">
+        <li><b>1</b> <span th:text="#{consultas.fluxo.1}">Tutor solicita</span></li>
+        <li><b>2</b> <span th:text="#{consultas.fluxo.2}">Clínica confirma</span></li>
+        <li><b>3</b> <span th:text="#{consultas.fluxo.3}">Atendimento registrado</span></li>
+      </ol>
+      <section class="panel">
+        <p class="empty" th:if="${#lists.isEmpty(consultas)}" th:text="#{consultas.vazio}">Nenhuma consulta por aqui ainda.</p>
+        <article class="consult-card" th:each="c : ${consultas}">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow" th:text="${c.animal}">Bento</span>
+              <h2 th:text="${c.tipo}">Consulta</h2>
+            </div>
+            <span class="badge" th:classappend="${c.status.name()}" th:text="#{consulta.status.__${c.status}__}">Status</span>
+          </div>
+          <p th:text="${#temporals.format(c.data, #messages.msg('formato.data'))} + ' · ' + (${c.hora} ?: #{geral.sem-horario}) + ' · ' + (${c.local} ?: #{geral.local-nao-informado})">Data</p>
+          <p th:if="${usuario.admin()}" th:text="#{campo.tutor} + ': ' + ${c.tutor}">Tutor</p>
+          <p class="note" th:if="${c.observacao != null}" th:text="${c.observacao}">Observação</p>
+          <p class="note" th:if="${c.status.name() == 'INDEFINIDA'}" th:text="#{consultas.legado}">Registro anterior.</p>
+          <div class="actions">
+            <a th:if="${c.ativa()}" class="button secondary" th:href="@{/consultas/{id}/reagendar(id=${c.id})}" th:text="#{acao.reagendar}">Reagendar</a>
+            <form th:if="${usuario.admin() and c.aguardandoConfirmacao()}" th:action="@{/consultas/{id}/confirmar(id=${c.id})}" method="post">
+              <button class="button" th:text="#{acao.confirmar}">Confirmar</button>
+            </form>
+            <details th:if="${usuario.admin() and c.confirmada()}">
+              <summary th:text="#{consultas.concluir}">Concluir atendimento</summary>
+              <form th:action="@{/consultas/{id}/concluir(id=${c.id})}" method="post">
+                <label><span th:text="#{consultas.resumo}">Resumo do atendimento</span>
+                  <textarea name="observacao" required maxlength="255"></textarea></label>
+                <button class="button" th:text="#{acao.concluir}">Concluir</button>
+              </form>
+            </details>
+            <details th:if="${c.ativa()}">
+              <summary th:text="#{consultas.cancelar}">Cancelar consulta</summary>
+              <form th:action="@{/consultas/{id}/cancelar(id=${c.id})}" method="post">
+                <label><span th:text="#{consultas.motivo}">Motivo</span>
+                  <textarea name="motivo" required maxlength="255"></textarea></label>
+                <button class="button danger-button" th:text="#{consultas.confirmar-cancelamento}">Confirmar cancelamento</button>
+              </form>
+            </details>
+          </div>
+        </article>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

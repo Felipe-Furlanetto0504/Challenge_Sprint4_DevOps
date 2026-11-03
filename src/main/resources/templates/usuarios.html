@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{usuarios.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{nav.secao-clinica}">ÁREA DA CLÍNICA</div>
+          <h1 th:text="#{usuarios.titulo}">Tutores e equipe</h1>
+          <p th:text="#{usuarios.subtitulo}">Pessoas que fazem parte desta jornada de cuidado.</p>
+        </div>
+      </header>
+      <section class="panel table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col" th:text="#{campo.nome}">Nome</th>
+              <th scope="col" th:text="#{campo.email}">E-mail</th>
+              <th scope="col" th:text="#{campo.telefone}">Telefone</th>
+              <th scope="col" th:text="#{usuarios.perfil}">Perfil</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="u : ${usuarios}">
+              <td th:text="${u.nome}"></td>
+              <td th:text="${u.email}"></td>
+              <td th:text="${u.telefone} ?: #{geral.nao-informado}"></td>
+              <td><span class="badge" th:classappend="${u.role}" th:text="#{perfil.__${u.role}__}"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,170 @@
+# =====================================================================================
+#  FutureVet — Pipeline CI/CD (Challenge FIAP 2026 · Sprint 4 · DevOps Tools & Cloud)
+#
+#  Estágio CI  : build Maven + testes automatizados (JUnit) + publicação do artefato .jar
+#  Estágio CD  : só começa quando o CI termina e o artefato novo foi publicado;
+#                faz o deploy do .jar no Azure Web App (App Service Linux, Java 17)
+#
+#  Dados sensíveis (usuário/senha do Oracle e chave JWT) NÃO ficam neste arquivo:
+#  vêm do Variable Group "futurevet-secrets" (Pipelines > Library), com cadeado (secret).
+# =====================================================================================
+
+# CI dispara a cada alteração de código na branch master.
+# Mudanças só em documentação não disparam a esteira (README/docs não são código).
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    exclude:
+      - README.md
+      - docs/**
+
+pr: none
+
+variables:
+  # Segredos protegidos (Library > Variable groups)
+  - group: futurevet-secrets
+  # Configuração não sensível do deploy — troque o sufixo pelo RM do dono da assinatura Azure
+  - name: azureServiceConnection
+    value: sc-azure-futurevet
+  - name: resourceGroup
+    value: rg-futurevet-562074
+  - name: webAppName
+    value: futurevet-562074
+  - name: artifactName
+    value: futurevet-jar
+  # 'false' = agente hospedado da Microsoft (ubuntu-latest)
+  # 'true'  = agente próprio (self-hosted) no pool Default — ver README, seção 5.8
+  - name: usarAgenteProprio
+    value: 'false'
+
+stages:
+  # -----------------------------------------------------------------------------------
+  # CI — Integração contínua
+  # -----------------------------------------------------------------------------------
+  - stage: CI
+    displayName: 'CI · Build, testes e artefato'
+    jobs:
+      - job: BuildTest
+        displayName: 'Build Maven + testes JUnit'
+        pool:
+          ${{ if eq(variables.usarAgenteProprio, 'true') }}:
+            name: Default
+          ${{ else }}:
+            vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            displayName: 'Baixar o código do repositório'
+
+          # 'package' compila, roda TODOS os testes (surefire) e só gera o .jar se eles passarem
+          - task: Maven@4
+            displayName: 'Compilar e rodar testes automatizados (mvn clean package)'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'clean package'
+              options: '-B -ntp'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.17'
+              jdkArchitectureOption: 'x64'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              testRunTitle: 'FutureVet · testes automatizados'
+
+          - task: CopyFiles@2
+            displayName: 'Separar o .jar gerado'
+            inputs:
+              SourceFolder: '$(System.DefaultWorkingDirectory)/target'
+              Contents: 'futurevet.jar'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publicar artefato no Azure DevOps'
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)'
+              artifact: '$(artifactName)'
+              publishLocation: 'pipeline'
+
+  # -----------------------------------------------------------------------------------
+  # CD — Entrega contínua: roda automaticamente depois que o CI publica o artefato novo
+  # -----------------------------------------------------------------------------------
+  - stage: CD
+    displayName: 'CD · Deploy no Azure Web App'
+    dependsOn: CI
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - deployment: DeployWebApp
+        displayName: 'Deploy do futurevet.jar no App Service'
+        pool:
+          ${{ if eq(variables.usarAgenteProprio, 'true') }}:
+            name: Default
+          ${{ else }}:
+            vmImage: ubuntu-latest
+        environment: 'futurevet-producao'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: $(artifactName)
+                  displayName: 'Baixar o artefato gerado pelo CI'
+
+                - task: AzureCLI@2
+                  displayName: 'Aplicar variáveis protegidas no Web App'
+                  inputs:
+                    azureSubscription: '${{ variables.azureServiceConnection }}'
+                    scriptType: 'bash'
+                    scriptLocation: 'inlineScript'
+                    inlineScript: |
+                      set -euo pipefail
+                      az webapp config appsettings set \
+                        --resource-group "$(resourceGroup)" \
+                        --name "$(webAppName)" \
+                        --settings \
+                          DB_URL="$FV_DB_URL" \
+                          DB_USER="$FV_DB_USER" \
+                          DB_PASSWORD="$FV_DB_PASSWORD" \
+                          JWT_SECRET="$FV_JWT_SECRET" \
+                          INFO_APP_BUILD="$(Build.BuildNumber)" \
+                        --output none
+                      echo "Variáveis aplicadas (valores sensíveis mascarados pelo Azure DevOps)."
+                  env:
+                    # Variáveis secretas só chegam ao script quando mapeadas explicitamente
+                    FV_DB_URL: $(DB_URL)
+                    FV_DB_USER: $(DB_USER)
+                    FV_DB_PASSWORD: $(DB_PASSWORD)
+                    FV_JWT_SECRET: $(JWT_SECRET)
+
+                - task: AzureCLI@2
+                  displayName: 'Deploy do .jar no Azure Web App'
+                  inputs:
+                    azureSubscription: '${{ variables.azureServiceConnection }}'
+                    scriptType: 'bash'
+                    scriptLocation: 'inlineScript'
+                    inlineScript: |
+                      set -euo pipefail
+                      # --type jar: o App Service grava o arquivo como /home/site/wwwroot/app.jar e reinicia
+                      az webapp deploy \
+                        --resource-group "$(resourceGroup)" \
+                        --name "$(webAppName)" \
+                        --src-path "$(Pipeline.Workspace)/$(artifactName)/futurevet.jar" \
+                        --type jar \
+                        --restart true \
+                        --track-status false
+
+                - bash: |
+                    set -u
+                    URL="https://$(webAppName).azurewebsites.net/actuator/health"
+                    echo "Aguardando a aplicação subir em $URL"
+                    for i in $(seq 1 40); do
+                      RESPOSTA=$(curl -s --max-time 15 "$URL" || true)
+                      if echo "$RESPOSTA" | grep -q '"status":"UP"'; then
+                        echo "Aplicação no ar: $RESPOSTA"
+                        exit 0
+                      fi
+                      echo "Tentativa $i/40 — ainda iniciando..."
+                      sleep 15
+                    done
+                    echo "##vso[task.logissue type=error]A aplicação não respondeu UP no health check."
+                    exit 1
+                  displayName: 'Verificar saúde da aplicação (/actuator/health)'

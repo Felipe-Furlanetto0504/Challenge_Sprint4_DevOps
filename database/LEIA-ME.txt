@@ -1,0 +1,1 @@
+O DDL corresponde ao esquema base enviado. Para instalar a aplicação, use Flyway conforme docs/ORACLE.md. Não execute este CREATE TABLE sobre tabelas existentes. As extensões estão na migration Java V2; senhas são convertidas na V3. As procedures/relatórios do script original não são executados pela aplicação nova.

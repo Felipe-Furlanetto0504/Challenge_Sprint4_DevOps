@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{assistente.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{assistente.eyebrow}">INTELIGÊNCIA ARTIFICIAL A SERVIÇO DO CUIDADO</div>
+          <h1 th:text="#{assistente.titulo}">Assistente Vet</h1>
+          <p th:text="#{assistente.subtitulo}">Tire dúvidas sobre vacinas, consultas e cuidados.</p>
+        </div>
+        <form th:action="@{/assistente/limpar}" method="post" th:unless="${#lists.isEmpty(trocas)}">
+          <button class="button secondary" th:text="#{assistente.limpar}">Nova conversa</button>
+        </form>
+      </header>
+      <section class="panel chat">
+        <div class="chat-aviso" role="note" th:text="#{assistente.aviso}">O assistente não substitui o veterinário.</div>
+        <div class="chat-vazio" th:if="${#lists.isEmpty(trocas)}">
+          <p th:text="#{assistente.sugestoes}">Experimente perguntar:</p>
+          <ul>
+            <li th:text="#{assistente.sugestao.1}">Quais vacinas dos meus pets estão atrasadas?</li>
+            <li th:text="#{assistente.sugestao.2}">Quando é a próxima consulta?</li>
+            <li th:text="#{assistente.sugestao.3}">Que cuidados devo ter com um filhote?</li>
+          </ul>
+        </div>
+        <ol class="chat-mensagens" th:unless="${#lists.isEmpty(trocas)}">
+          <th:block th:each="t : ${trocas}">
+            <li class="msg pessoa"><span class="msg-autor" th:text="#{assistente.voce}">Você</span><p th:text="${t.pergunta}">Pergunta</p></li>
+            <li class="msg ia"><span class="msg-autor" th:text="#{assistente.nome}">Assistente Vet</span><p class="msg-texto" th:text="${t.resposta}">Resposta</p></li>
+          </th:block>
+        </ol>
+        <form class="chat-form" th:action="@{/assistente}" method="post" th:object="${form}">
+          <div th:replace="~{layout :: errors}"></div>
+          <label for="pergunta" class="sr-only" th:text="#{campo.pergunta}">Pergunta</label>
+          <textarea id="pergunta" th:field="*{pergunta}" required maxlength="500" rows="2" autofocus th:placeholder="#{assistente.placeholder}"></textarea>
+          <button class="button" th:text="#{assistente.enviar}">Enviar ✦</button>
+        </form>
+        <p class="dica-canal" th:text="#{assistente.como-funciona}">As respostas vêm do microsserviço futurevet-ia.</p>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

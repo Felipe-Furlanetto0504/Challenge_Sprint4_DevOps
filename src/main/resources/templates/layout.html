@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' · FutureVet'">FutureVet</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+  </head>
+  <body>
+
+    <aside th:fragment="nav" class="sidebar">
+      <a class="brand" th:href="@{/}"><span class="brand-icon" aria-hidden="true">✚</span> FutureVet<span class="brand-dot">.</span></a>
+      <div class="nav-label" th:text="#{nav.secao}">CUIDADO CONTÍNUO</div>
+      <nav th:aria-label="#{nav.menu}">
+        <a th:href="@{/}" th:classappend="${paginaAtual == '/'} ? 'ativo'">◫ <span th:text="#{nav.visao-geral}">Visão geral</span></a>
+        <a th:href="@{/animais}" th:classappend="${#strings.startsWith(paginaAtual ?: '', '/animais')} ? 'ativo'">♡ <span th:text="#{nav.animais}">Animais</span></a>
+        <a th:href="@{/consultas}" th:classappend="${#strings.startsWith(paginaAtual ?: '', '/consultas')} ? 'ativo'">▦ <span th:text="#{nav.consultas}">Consultas</span></a>
+        <a th:href="@{/vacinas}" th:classappend="${#strings.startsWith(paginaAtual ?: '', '/vacinas')} ? 'ativo'">✓ <span th:text="#{nav.vacinas}">Carteira de vacinação</span></a>
+        <a th:href="@{/notificacoes}" th:classappend="${#strings.startsWith(paginaAtual ?: '', '/notificacoes')} ? 'ativo'">◉ <span th:text="#{nav.notificacoes}">Notificações</span>
+          <b class="contador" th:if="${notificacoesNaoLidas != null and notificacoesNaoLidas > 0}" th:text="${notificacoesNaoLidas}" th:title="#{notificacoes.nao-lidas}">2</b></a>
+        <a th:href="@{/assistente}" th:classappend="${#strings.startsWith(paginaAtual ?: '', '/assistente')} ? 'ativo'">✦ <span th:text="#{nav.assistente}">Assistente Vet</span></a>
+        <th:block th:if="${usuario != null and usuario.admin()}">
+          <div class="nav-label nav-label-admin" th:text="#{nav.secao-clinica}">ÁREA DA CLÍNICA</div>
+          <a th:href="@{/admin/usuarios}" th:classappend="${#strings.startsWith(paginaAtual ?: '', '/admin/usuarios')} ? 'ativo'">◎ <span th:text="#{nav.usuarios}">Tutores e equipe</span></a>
+          <a th:href="@{/admin/monitoramento}" th:classappend="${#strings.startsWith(paginaAtual ?: '', '/admin/monitoramento')} ? 'ativo'">◈ <span th:text="#{nav.monitoramento}">Monitoramento</span></a>
+        </th:block>
+      </nav>
+      <div class="sidebar-note">
+        <strong th:utext="#{nav.nota.titulo}">Cuidar hoje.<br>Viver melhor amanhã.</strong>
+        <p th:text="#{nav.nota.texto}">Uma jornada de saúde para cada pet.</p>
+      </div>
+      <div th:replace="~{layout :: idioma}"></div>
+      <div class="account" th:if="${usuario != null}">
+        <strong th:text="${usuario.nome}">Nome</strong>
+        <small th:text="${usuario.admin()} ? #{perfil.ADMIN} : #{perfil.TUTOR}">Tutor</small>
+        <form th:action="@{/logout}" method="post">
+          <button class="logout" th:text="#{nav.sair}">Sair da conta ↗</button>
+        </form>
+      </div>
+    </aside>
+
+    <div th:fragment="idioma" class="idioma" role="group" th:aria-label="#{idioma.rotulo}">
+      <span aria-hidden="true">🌐</span>
+      <a th:href="@{${uriIdioma}(lang='pt-BR')}" th:classappend="${#locale.language == 'pt'} ? 'ativo'" hreflang="pt-BR" lang="pt-BR">Português</a>
+      <a th:href="@{${uriIdioma}(lang='en')}" th:classappend="${#locale.language == 'en'} ? 'ativo'" hreflang="en" lang="en">English</a>
+    </div>
+
+    <div th:fragment="alerts">
+      <div class="alert success" role="status" th:if="${sucesso}" th:text="${sucesso}"></div>
+      <div class="alert danger" role="alert" th:if="${erro}" th:text="${erro}"></div>
+    </div>
+
+    <div th:fragment="errors" class="alert danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+      <strong th:text="#{form.confira}">Confira os dados:</strong>
+      <ul>
+        <li th:each="e : ${#fields.detailedErrors()}"
+            th:text="${e.global} ? ${e.message} : ${#messages.msg('campo.' + e.fieldName) + ': ' + e.message}"></li>
+      </ul>
+    </div>
+
+    <footer th:fragment="rodape" th:text="#{rodape}">FutureVet · Cuidado que acompanha a vida.</footer>
+  </body>
+</html>

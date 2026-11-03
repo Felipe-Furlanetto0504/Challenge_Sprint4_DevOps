@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(${id == null} ? #{consulta-form.titulo.nova} : #{consulta-form.titulo.reagendar})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{form.eyebrow}">CUIDADO EM CADA DETALHE</div>
+          <h1 th:text="${id == null} ? #{consulta-form.titulo.nova} : #{consulta-form.titulo.reagendar}">Agendar consulta</h1>
+          <p th:text="#{form.instrucao}">Preencha as informações abaixo.</p>
+        </div>
+      </header>
+      <section class="panel form-panel">
+        <form th:action="@{/consultas/salvar}" method="post" th:object="${form}">
+          <div th:replace="~{layout :: errors}"></div>
+          <input th:if="${id != null}" type="hidden" name="id" th:value="${id}">
+          <p class="form-tip" th:text="#{consulta-form.dica}">Segunda a sábado, das 08:00 às 18:00.</p>
+          <p class="empty" th:if="${id == null and #lists.isEmpty(animais)}">
+            <span th:text="#{consulta-form.sem-animais}">Cadastre um animal antes de agendar.</span>
+            <a th:href="@{/animais/novo}" th:text="#{animais.novo}">+ Cadastrar animal</a>
+          </p>
+          <div class="form-grid">
+            <label th:if="${id == null}"><span th:text="#{campo.animalId}">Animal</span>
+              <select th:field="*{animalId}" required th:errorclass="invalido">
+                <option value="" th:text="#{geral.selecione}">Selecione</option>
+                <option th:each="a : ${animais}" th:value="${a.id}" th:text="${usuario.admin()} ? ${a.nome} + ' · ' + ${a.tutor} : ${a.nome}">Bento</option>
+              </select></label>
+            <label th:if="${id != null}"><span th:text="#{campo.animalId}">Animal</span>
+              <input type="hidden" th:field="*{animalId}">
+              <input type="text" th:value="${animalAtual}" disabled th:title="#{consulta-form.animal-fixo}"></label>
+            <label><span th:text="#{campo.tipo}">Tipo de consulta</span>
+              <input type="text" th:field="*{tipo}" required maxlength="30" th:placeholder="#{consulta-form.tipo.exemplo}" th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.data}">Data</span>
+              <input type="date" th:field="*{data}" required th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.hora}">Horário</span>
+              <input type="time" th:field="*{hora}" required min="08:00" max="18:00" step="60" th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.local}">Local / consultório</span>
+              <input type="text" th:field="*{local}" required maxlength="100" th:placeholder="#{consulta-form.local.exemplo}" th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.observacao} + ' ' + #{geral.opcional}">Observações (opcional)</span>
+              <textarea th:field="*{observacao}" maxlength="255"></textarea></label>
+          </div>
+          <div class="form-actions">
+            <a class="button secondary" th:href="@{/consultas}" th:text="#{acao.voltar}">Voltar</a>
+            <button class="button" th:text="#{acao.salvar}">Salvar →</button>
+          </div>
+        </form>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

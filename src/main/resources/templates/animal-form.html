@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{animal-form.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{form.eyebrow}">CUIDADO EM CADA DETALHE</div>
+          <h1 th:text="#{animal-form.titulo}">Perfil do animal</h1>
+          <p th:text="#{form.instrucao}">Preencha as informações abaixo.</p>
+        </div>
+      </header>
+      <section class="panel form-panel">
+        <form th:action="@{/animais/salvar}" method="post" th:object="${form}">
+          <div th:replace="~{layout :: errors}"></div>
+          <input th:if="${id != null}" type="hidden" name="id" th:value="${id}">
+          <div class="form-grid">
+            <label><span th:text="#{campo.nome}">Nome</span>
+              <input type="text" th:field="*{nome}" required maxlength="30" th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.especie}">Espécie</span>
+              <select th:field="*{especie}" required th:errorclass="invalido">
+                <option value="" th:text="#{geral.selecione}">Selecione</option>
+                <option th:each="e : ${ {'CAO','GATO','COELHO','OUTRO'} }" th:value="${e}" th:text="#{especie.__${e}__}">Cão</option>
+              </select></label>
+            <label><span th:text="#{campo.raca} + ' ' + #{geral.opcional}">Raça (opcional)</span>
+              <input type="text" th:field="*{raca}" maxlength="35"></label>
+            <label><span th:text="#{campo.idade} + ' ' + #{geral.opcional}">Idade (opcional)</span>
+              <input type="text" th:field="*{idade}" maxlength="30" th:placeholder="#{animal-form.idade.exemplo}"></label>
+            <label><span th:text="#{campo.porte} + ' ' + #{geral.opcional}">Porte (opcional)</span>
+              <select th:field="*{porte}">
+                <option value="" th:text="#{geral.nao-informado}">Não informado</option>
+                <option th:each="p : ${ {'PEQUENO','MEDIO','GRANDE'} }" th:value="${p}" th:text="#{porte.__${p}__}">Pequeno</option>
+              </select></label>
+            <label><span th:text="#{animal-form.peso} + ' ' + #{geral.opcional}">Peso em kg (opcional)</span>
+              <input type="number" th:field="*{peso}" step="0.01" min="0.01" max="999.99" th:errorclass="invalido"></label>
+          </div>
+          <div class="form-actions">
+            <a class="button secondary" th:href="@{/animais}" th:text="#{acao.voltar}">Voltar</a>
+            <button class="button" th:text="#{acao.salvar}">Salvar →</button>
+          </div>
+        </form>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

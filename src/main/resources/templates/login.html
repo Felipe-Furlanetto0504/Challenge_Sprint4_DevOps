@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{login.titulo})}"></head>
+  <body class="auth">
+    <section class="auth-story">
+      <a class="brand" th:href="@{/}">✚ FutureVet.</a>
+      <div>
+        <div class="eyebrow" th:text="#{login.eyebrow}">MAIS PRESENÇA. MAIS CUIDADO.</div>
+        <h1 th:utext="#{login.manchete}">A saúde deles.<br>Mais perto de você.</h1>
+        <p th:text="#{login.texto}">Consultas, vacinas e o histórico do seu companheiro.</p>
+        <div class="pet-art" aria-hidden="true">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+          <div class="face"><span>● &nbsp; ●</span><b>♥</b></div>
+        </div>
+      </div>
+      <small th:text="#{login.rodape}">Cuidado contínuo, em cada fase da vida.</small>
+    </section>
+    <main class="auth-form">
+      <div th:replace="~{layout :: idioma}"></div>
+      <div class="eyebrow" th:text="#{login.bem-vindo}">BEM-VINDO AO FUTUREVET</div>
+      <h2 th:text="#{login.chamada}">Vamos cuidar juntos?</h2>
+      <p th:text="#{login.instrucao}">Entre na sua conta para acompanhar a saúde dos seus pets.</p>
+      <div class="alert danger" role="alert" th:if="${param.error}" th:text="#{erro.login.invalido}">E-mail ou senha inválidos.</div>
+      <div class="alert success" role="status" th:if="${param.cadastro}" th:text="#{login.cadastro-ok}">Cadastro concluído.</div>
+      <div class="alert success" role="status" th:if="${param.logout}" th:text="#{login.saiu}">Você saiu da conta.</div>
+      <form th:action="@{/login}" method="post">
+        <label><span th:text="#{campo.email}">E-mail</span>
+          <input name="email" type="email" required maxlength="50" autocomplete="username" th:placeholder="#{login.email.exemplo}"></label>
+        <label><span th:text="#{campo.senha}">Senha</span>
+          <input name="senha" type="password" required autocomplete="current-password" th:placeholder="#{login.senha.exemplo}"></label>
+        <button class="button wide" th:text="#{login.entrar}">Entrar na minha conta →</button>
+      </form>
+      <p><span th:text="#{login.sem-conta}">Ainda não tem conta?</span> <a th:href="@{/registro}" th:text="#{login.cadastre-se}">Cadastre-se</a></p>
+      <div class="demo-note" th:if="${demo}">
+        <strong th:text="#{login.demo.titulo}">Demonstração local</strong>
+        <p><span th:text="#{perfil.TUTOR}">Tutor</span>: tutor@futurevet.local<br><span th:text="#{perfil.ADMIN}">Clínica</span>: clinica@futurevet.local<br><span th:text="#{campo.senha}">Senha</span>: Futurevet123!</p>
+        <small th:text="#{login.demo.aviso}">Dados fictícios, reiniciados ao fechar a aplicação.</small>
+      </div>
+    </main>
+  </body>
+</html>

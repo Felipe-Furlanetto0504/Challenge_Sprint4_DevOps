@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{erro.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <section class="panel error-panel">
+        <div class="eyebrow" th:text="#{erro.eyebrow}">VAMOS RESOLVER</div>
+        <h1 th:text="#{erro.titulo}">Não foi possível continuar.</h1>
+        <p th:text="${mensagem} ?: #{erro.inesperado}">Ocorreu um problema inesperado.</p>
+        <a class="button" th:href="@{/}" th:text="#{erro.voltar}">Voltar para o início</a>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

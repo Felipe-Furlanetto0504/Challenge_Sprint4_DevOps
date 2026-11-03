@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{registro.titulo})}"></head>
+  <body class="register">
+    <main class="register-card">
+      <div class="register-top">
+        <a class="brand" th:href="@{/login}">✚ FutureVet.</a>
+        <div th:replace="~{layout :: idioma}"></div>
+      </div>
+      <h1 th:text="#{registro.manchete}">O primeiro passo é cuidar.</h1>
+      <p th:text="#{registro.instrucao}">Crie sua conta de tutor. Depois, cadastre seus animais.</p>
+      <form th:action="@{/registro}" method="post" th:object="${form}">
+        <div th:replace="~{layout :: errors}"></div>
+        <div class="form-grid">
+          <label><span th:text="#{campo.nome-completo}">Nome completo</span>
+            <input type="text" th:field="*{nome}" required maxlength="50" autocomplete="name" th:errorclass="invalido"></label>
+          <label><span th:text="#{campo.email}">E-mail</span>
+            <input type="email" th:field="*{email}" required maxlength="50" autocomplete="email" th:errorclass="invalido"></label>
+          <label><span th:text="#{campo.cpf}">CPF</span>
+            <input type="text" th:field="*{cpf}" required placeholder="000.000.000-00" maxlength="14" inputmode="numeric" th:errorclass="invalido"></label>
+          <label><span th:text="#{campo.telefone} + ' ' + #{geral.opcional}">Telefone (opcional)</span>
+            <input type="tel" th:field="*{telefone}" placeholder="(11) 99999-9999" maxlength="20" th:errorclass="invalido"></label>
+          <label><span th:text="#{registro.senha}">Senha (8 a 60 caracteres)</span>
+            <input type="password" th:field="*{senha}" required minlength="8" maxlength="60" autocomplete="new-password" th:errorclass="invalido"></label>
+          <label><span th:text="#{campo.confirmacao}">Confirme sua senha</span>
+            <input type="password" th:field="*{confirmacao}" required autocomplete="new-password" th:errorclass="invalido"></label>
+        </div>
+        <button class="button wide" th:text="#{registro.criar}">Criar minha conta →</button>
+      </form>
+      <p><span th:text="#{registro.tem-conta}">Já tem uma conta?</span> <a th:href="@{/login}" th:text="#{registro.entrar}">Entrar</a></p>
+    </main>
+  </body>
+</html>

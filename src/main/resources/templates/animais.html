@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{animais.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{animais.eyebrow}">CADA PET, UMA HISTÓRIA</div>
+          <h1 th:text="#{animais.titulo}">Animais</h1>
+          <p th:text="#{animais.subtitulo}">Informações importantes para um cuidado mais próximo.</p>
+        </div>
+        <a class="button" th:href="@{/animais/novo}" th:text="#{animais.novo}">+ Cadastrar animal</a>
+      </header>
+      <section class="panel">
+        <p class="empty" th:if="${#lists.isEmpty(animais)}" th:text="#{animais.vazio}">Nenhum animal cadastrado.</p>
+        <div class="pet-grid">
+          <article class="pet-card" th:each="a : ${animais}">
+            <div class="pet-avatar" aria-hidden="true" th:text="${a.especie == 'GATO'} ? '♧' : '♡'">♡</div>
+            <h2 th:text="${a.nome}">Bento</h2>
+            <p th:text="#{especie.__${a.especie}__} + ' · ' + (${a.raca} ?: #{geral.raca-nao-informada})">Cão</p>
+            <dl>
+              <dt th:text="#{campo.idade}">Idade</dt>
+              <dd th:text="${a.idade} ?: #{geral.nao-informada}"></dd>
+              <dt th:text="#{campo.porte}">Porte</dt>
+              <dd th:if="${a.porte != null}" th:text="#{porte.__${a.porte}__}"></dd>
+              <dd th:unless="${a.porte != null}" th:text="#{geral.nao-informado}"></dd>
+              <dt th:text="#{campo.peso}">Peso</dt>
+              <dd th:text="${a.peso != null} ? ${#numbers.formatDecimal(a.peso, 1, 'DEFAULT', 2, 'DEFAULT')} + ' kg' : #{geral.nao-informado}"></dd>
+              <th:block th:if="${usuario.admin()}">
+                <dt th:text="#{campo.tutor}">Tutor</dt>
+                <dd th:text="${a.tutor}"></dd>
+              </th:block>
+            </dl>
+            <div class="actions">
+              <a class="button secondary" th:href="@{/animais/{id}/editar(id=${a.id})}" th:text="#{acao.editar}">Editar</a>
+              <details>
+                <summary th:text="#{acao.excluir}">Excluir</summary>
+                <p th:text="#{animais.excluir.confirmacao}">Excluir este cadastro?</p>
+                <form th:action="@{/animais/{id}/excluir(id=${a.id})}" method="post">
+                  <button class="button danger-button" th:text="#{acao.confirmar-exclusao}">Confirmar exclusão</button>
+                </form>
+              </details>
+            </div>
+          </article>
+        </div>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

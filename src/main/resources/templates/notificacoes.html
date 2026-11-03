@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{notificacoes.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{notificacoes.eyebrow}">FIQUE POR DENTRO</div>
+          <h1 th:text="#{notificacoes.titulo}">Notificações</h1>
+          <p th:text="${usuario.admin()} ? #{notificacoes.subtitulo.clinica} : #{notificacoes.subtitulo.tutor}">Avisos.</p>
+        </div>
+        <form th:action="@{/notificacoes/lidas}" method="post" th:if="${notificacoesNaoLidas > 0}">
+          <button class="button secondary" th:text="#{notificacoes.marcar-lidas}">Marcar todas como lidas</button>
+        </form>
+      </header>
+      <section class="panel">
+        <p class="empty" th:if="${#lists.isEmpty(notificacoes)}" th:text="#{notificacoes.vazio}">Nenhum aviso por enquanto.</p>
+        <ul class="avisos">
+          <li th:each="n : ${notificacoes}" th:classappend="${n.lida} ? 'lida' : 'nova'">
+            <span class="aviso-icone" aria-hidden="true" th:text="${#strings.startsWith(n.tipo.name(), 'CONSULTA')} ? '▦' : '✓'">▦</span>
+            <div>
+              <strong th:text="#{notificacao.titulo.__${n.tipo}__}">Consulta confirmada</strong>
+              <p th:text="#{notificacao.texto.__${n.tipo}__(${n.animal}, ${n.detalhe}, ${n.dataEvento != null} ? ${#temporals.format(n.dataEvento, #messages.msg('formato.data'))} : '')}">Texto</p>
+              <small th:text="${#temporals.format(n.criadaEm, #messages.msg('formato.data-hora'))}">26/10/2026 10:00</small>
+            </div>
+            <span class="badge" th:unless="${n.lida}" th:text="#{notificacoes.nova}">Nova</span>
+          </li>
+        </ul>
+        <p class="dica-canal" th:text="#{notificacoes.como-funciona}">Os avisos chegam por uma fila de mensagens (RabbitMQ).</p>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

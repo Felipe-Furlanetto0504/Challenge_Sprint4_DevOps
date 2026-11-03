@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#D9480F"/>
+    </marker>
+    <marker id="setaVerde" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2B8A3E"/>
+    </marker>
+    <marker id="setaCinza" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/>
+    </marker>
+    <g id="pessoa">
+      <circle cx="0" cy="-22" r="13" fill="none" stroke="#1F2937" stroke-width="2.5"/>
+      <path d="M-24,22 C-24,-2 24,-2 24,22 Z" fill="none" stroke="#1F2937" stroke-width="2.5"/>
+    </g>
+  </defs>
+
+  <rect width="1600" height="1100" fill="#FFFFFF"/>
+
+  <!-- Título -->
+  <text x="40" y="52" font-size="26" font-weight="700" fill="#111827">FutureVet · Arquitetura da solução e esteira CI/CD</text>
+  <text x="40" y="80" font-size="15" fill="#4B5563">Challenge FIAP 2026 (Clyvo Vet) · Sprint 4 · DevOps Tools &amp; Cloud Computing · Java Spring Boot no Azure Web App + Oracle da FIAP</text>
+
+  <!-- ============ PERSONAS ============ -->
+  <g transform="translate(130,200)"><use href="#pessoa"/></g>
+  <text x="130" y="250" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">Desenvolvedor</text>
+  <text x="130" y="268" font-size="12" fill="#4B5563" text-anchor="middle">integrantes do grupo</text>
+  <text x="130" y="284" font-size="12" fill="#4B5563" text-anchor="middle">IDE + Git</text>
+
+  <g transform="translate(130,430)"><use href="#pessoa"/></g>
+  <text x="130" y="480" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">Professor</text>
+  <text x="130" y="498" font-size="12" fill="#4B5563" text-anchor="middle">acesso Basic +</text>
+  <text x="130" y="514" font-size="12" fill="#4B5563" text-anchor="middle">admin do projeto</text>
+
+  <g transform="translate(130,700)"><use href="#pessoa"/></g>
+  <text x="130" y="750" font-size="14" font-weight="700" fill="#111827" text-anchor="middle">Usuário final</text>
+  <text x="130" y="768" font-size="12" fill="#4B5563" text-anchor="middle">tutor do pet (TUTOR)</text>
+  <text x="130" y="784" font-size="12" fill="#4B5563" text-anchor="middle">clínica (ADMIN)</text>
+
+  <!-- ============ GITHUB ============ -->
+  <rect x="280" y="120" width="270" height="200" rx="14" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/>
+  <text x="300" y="148" font-size="15" font-weight="700" fill="#374151">GitHub</text>
+  <text x="300" y="166" font-size="12" fill="#6B7280">controle de versão (Git)</text>
+  <rect x="300" y="180" width="230" height="122" rx="10" fill="#FFFFFF" stroke="#9CA3AF"/>
+  <text x="314" y="204" font-size="13" font-weight="700" fill="#111827">Challenge_Sprint4_DevOps</text>
+  <text x="314" y="224" font-size="12" fill="#374151">branch master</text>
+  <text x="314" y="246" font-size="12" fill="#374151">• código Spring Boot (src/)</text>
+  <text x="314" y="264" font-size="12" fill="#374151">• azure-pipelines.yml</text>
+  <text x="314" y="282" font-size="12" fill="#374151">• infra/ (Azure CLI)</text>
+
+  <!-- ============ AZURE DEVOPS ============ -->
+  <rect x="600" y="110" width="960" height="340" rx="14" fill="#EAF2FC" stroke="#0B5CAD" stroke-width="2"/>
+  <text x="620" y="138" font-size="15" font-weight="700" fill="#0B3D73">Azure DevOps · projeto "Sprint 4 – Azure DevOps"</text>
+  <text x="620" y="156" font-size="12" fill="#355C85">Pipelines (YAML multi-stage) · Library · Environments · Test results</text>
+
+  <!-- CI -->
+  <rect x="625" y="172" width="305" height="258" rx="12" fill="#FFFFFF" stroke="#0B5CAD"/>
+  <text x="641" y="196" font-size="14" font-weight="700" fill="#0B3D73">Estágio CI</text>
+  <text x="641" y="213" font-size="11.5" fill="#4B5563">agente ubuntu-latest · JDK 17</text>
+  <rect x="641" y="226" width="273" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="655" y="249" font-size="12.5" fill="#111827">Checkout do repositório</text>
+  <rect x="641" y="270" width="273" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="655" y="293" font-size="12.5" fill="#111827">Maven: compilar (mvn clean package)</text>
+  <rect x="641" y="314" width="273" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="655" y="337" font-size="12.5" fill="#111827">Testes JUnit → aba Tests</text>
+  <rect x="641" y="358" width="273" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="655" y="381" font-size="12.5" fill="#111827">Publish Pipeline Artifact</text>
+  <text x="641" y="417" font-size="11.5" fill="#4B5563">falhou um teste → não gera artefato</text>
+
+  <!-- Artefato -->
+  <rect x="955" y="172" width="165" height="118" rx="12" fill="#FFFFFF" stroke="#0B5CAD"/>
+  <text x="970" y="196" font-size="14" font-weight="700" fill="#0B3D73">Artefato</text>
+  <rect x="970" y="210" width="44" height="54" rx="4" fill="#FFF4E6" stroke="#D9480F"/>
+  <text x="992" y="242" font-size="11" font-weight="700" fill="#D9480F" text-anchor="middle">.jar</text>
+  <text x="1022" y="230" font-size="12" fill="#111827">futurevet-jar</text>
+  <text x="1022" y="248" font-size="11.5" fill="#4B5563">futurevet.jar</text>
+
+  <!-- Library -->
+  <rect x="955" y="306" width="165" height="124" rx="12" fill="#FFFFFF" stroke="#0B5CAD"/>
+  <text x="970" y="330" font-size="14" font-weight="700" fill="#0B3D73">Library</text>
+  <text x="970" y="348" font-size="11.5" fill="#4B5563">futurevet-secrets</text>
+  <rect x="970" y="358" width="14" height="11" rx="2" fill="#374151"/>
+  <path d="M973,358 v-4 a4,4 0 0 1 8,0 v4" fill="none" stroke="#374151" stroke-width="1.8"/>
+  <text x="990" y="368" font-size="11.5" fill="#111827">DB_USER</text>
+  <text x="990" y="386" font-size="11.5" fill="#111827">DB_PASSWORD</text>
+  <text x="990" y="404" font-size="11.5" fill="#111827">JWT_SECRET</text>
+  <text x="970" y="421" font-size="11" fill="#4B5563">+ DB_URL</text>
+
+  <!-- CD -->
+  <rect x="1145" y="172" width="395" height="258" rx="12" fill="#FFFFFF" stroke="#0B5CAD"/>
+  <text x="1161" y="196" font-size="14" font-weight="700" fill="#0B3D73">Estágio CD</text>
+  <text x="1161" y="213" font-size="11.5" fill="#4B5563">environment futurevet-producao · só após o CI</text>
+  <rect x="1161" y="226" width="363" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="1175" y="249" font-size="12.5" fill="#111827">Download do artefato novo</text>
+  <rect x="1161" y="270" width="363" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="1175" y="293" font-size="12.5" fill="#111827">Azure CLI: App Settings com os segredos</text>
+  <rect x="1161" y="314" width="363" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="1175" y="337" font-size="12.5" fill="#111827">Azure CLI: az webapp deploy --type jar</text>
+  <rect x="1161" y="358" width="363" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="1175" y="381" font-size="12.5" fill="#111827">Health check /actuator/health = UP</text>
+  <text x="1161" y="417" font-size="11.5" fill="#4B5563">service connection sc-azure-futurevet (ARM)</text>
+
+  <!-- ============ AZURE ============ -->
+  <rect x="600" y="500" width="620" height="330" rx="14" fill="#E7F3FF" stroke="#0078D4" stroke-width="2"/>
+  <text x="620" y="528" font-size="15" font-weight="700" fill="#004E8C">Microsoft Azure · rg-futurevet-562074</text>
+  <text x="620" y="546" font-size="12" fill="#2F5F8A">recursos criados com Azure CLI (infra/criar-recursos-azure.sh)</text>
+  <rect x="625" y="560" width="570" height="252" rx="12" fill="#F4FAFF" stroke="#4A9BE0" stroke-dasharray="6 4"/>
+  <text x="641" y="582" font-size="12.5" font-weight="700" fill="#004E8C">App Service Plan · plan-futurevet-562074 (Linux B1)</text>
+  <rect x="655" y="596" width="510" height="200" rx="12" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+  <text x="673" y="622" font-size="15" font-weight="700" fill="#111827">Azure Web App · futurevet-562074</text>
+  <text x="673" y="641" font-size="12" fill="#4B5563">Java 17 (Java SE) · Spring Boot 3.5 · https://futurevet-562074.azurewebsites.net</text>
+  <rect x="673" y="654" width="232" height="56" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="685" y="676" font-size="12" font-weight="700" fill="#111827">Web (Thymeleaf)</text>
+  <text x="685" y="696" font-size="11.5" fill="#374151">pets, vacinas, consultas</text>
+  <rect x="915" y="654" width="232" height="56" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="927" y="676" font-size="12" font-weight="700" fill="#111827">API REST /api (JWT)</text>
+  <text x="927" y="696" font-size="11.5" fill="#374151">consumida pelo app mobile</text>
+  <rect x="673" y="718" width="232" height="60" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="685" y="740" font-size="12" font-weight="700" fill="#111827">Spring Security · Flyway</text>
+  <text x="685" y="760" font-size="11.5" fill="#374151">perfis TUTOR / ADMIN</text>
+  <rect x="915" y="718" width="232" height="60" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
+  <text x="927" y="740" font-size="12" font-weight="700" fill="#111827">Actuator · App Settings</text>
+  <text x="927" y="760" font-size="11.5" fill="#374151">health, info, logs</text>
+
+  <!-- ============ ORACLE FIAP ============ -->
+  <rect x="1260" y="500" width="300" height="175" rx="14" fill="#FDEEEC" stroke="#C74634" stroke-width="2"/>
+  <text x="1280" y="528" font-size="15" font-weight="700" fill="#8A2A1D">Banco em nuvem · Oracle FIAP</text>
+  <text x="1280" y="546" font-size="12" fill="#8A4A40">PaaS aceito pela disciplina</text>
+  <g transform="translate(1280,560)">
+    <ellipse cx="22" cy="8" rx="22" ry="8" fill="#FFFFFF" stroke="#C74634" stroke-width="1.6"/>
+    <path d="M0,8 v34 a22,8 0 0 0 44,0 v-34" fill="#FFFFFF" stroke="#C74634" stroke-width="1.6"/>
+    <path d="M0,25 a22,8 0 0 0 44,0" fill="none" stroke="#C74634" stroke-width="1.2"/>
+  </g>
+  <text x="1338" y="576" font-size="12" fill="#111827">oracle.fiap.com.br:1521/ORCL</text>
+  <text x="1338" y="594" font-size="12" fill="#111827">schema versionado (Flyway)</text>
+  <text x="1280" y="630" font-size="11.5" fill="#374151">TB_USUARIO · TB_ANIMAL · TB_VACINA</text>
+  <text x="1280" y="648" font-size="11.5" fill="#374151">TB_CONSULTA · TB_FV_NOTIFICACAO</text>
+
+  <!-- ============ RENDER / IA ============ -->
+  <rect x="1260" y="700" width="300" height="130" rx="14" fill="#F1EDFB" stroke="#6E56CF" stroke-width="2"/>
+  <text x="1280" y="728" font-size="15" font-weight="700" fill="#45309A">Microsserviço futurevet-ia</text>
+  <text x="1280" y="746" font-size="12" fill="#5B4A9E">Render · Spring AI</text>
+  <text x="1280" y="772" font-size="12" fill="#111827">assistente veterinário com o</text>
+  <text x="1280" y="790" font-size="12" fill="#111827">histórico do pet como contexto</text>
+  <text x="1280" y="814" font-size="11.5" fill="#4B5563">LLM Groq (llama-3.3-70b)</text>
+
+  <!-- ============ SETAS CI/CD (laranja, numeradas) ============ -->
+  <!-- 1 push -->
+  <path d="M175,200 H278" stroke="#D9480F" stroke-width="2.5" fill="none" marker-end="url(#seta)"/>
+  <text x="226" y="190" font-size="11.5" fill="#D9480F" text-anchor="middle">git push</text>
+  <!-- 2 gatilho CI -->
+  <path d="M550,240 H623" stroke="#D9480F" stroke-width="2.5" fill="none" marker-end="url(#seta)"/>
+  <text x="573" y="230" font-size="11.5" fill="#D9480F" text-anchor="middle">trigger</text>
+  <!-- 4 publica artefato -->
+  <path d="M914,376 C940,376 935,240 953,240" stroke="#D9480F" stroke-width="2.5" fill="none" marker-end="url(#seta)"/>
+  <!-- 5 dispara CD -->
+  <path d="M1120,232 H1143" stroke="#D9480F" stroke-width="2.5" fill="none" marker-end="url(#seta)"/>
+  <!-- 6 segredos -->
+  <path d="M1120,370 C1135,370 1135,288 1159,288" stroke="#D9480F" stroke-width="2.2" stroke-dasharray="6 4" fill="none" marker-end="url(#seta)"/>
+  <!-- 7 deploy -->
+  <path d="M1340,430 V470 H1080 V594" stroke="#D9480F" stroke-width="2.5" fill="none" marker-end="url(#seta)"/>
+  <text x="1210" y="462" font-size="11.5" fill="#D9480F" text-anchor="middle">az webapp deploy (futurevet.jar)</text>
+
+  <!-- Professor acompanha -->
+  <path d="M175,430 H598" stroke="#6B7280" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#setaCinza)"/>
+  <text x="390" y="420" font-size="11.5" fill="#6B7280" text-anchor="middle">avalia boards, repos, pipelines e testes</text>
+
+  <!-- ============ SETAS DE USO (verde, letras) ============ -->
+  <!-- A usuário -> web app -->
+  <path d="M175,700 H653" stroke="#2B8A3E" stroke-width="2.5" fill="none" marker-end="url(#setaVerde)"/>
+  <text x="390" y="690" font-size="11.5" fill="#2B8A3E" text-anchor="middle">HTTPS (navegador / app mobile)</text>
+  <!-- B web app -> oracle -->
+  <path d="M1165,625 H1258" stroke="#2B8A3E" stroke-width="2.5" fill="none" marker-end="url(#setaVerde)"/>
+  <text x="1240" y="615" font-size="11" fill="#2B8A3E" text-anchor="middle">JDBC</text>
+  <!-- C web app -> IA -->
+  <path d="M1165,765 H1258" stroke="#2B8A3E" stroke-width="2.5" fill="none" marker-end="url(#setaVerde)"/>
+  <text x="1240" y="755" font-size="11" fill="#2B8A3E" text-anchor="middle">Feign</text>
+
+  <!-- ============ BADGES ============ -->
+  <g font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <circle cx="226" cy="214" r="12" fill="#D9480F"/><text x="226" y="219">1</text>
+    <circle cx="586" cy="254" r="12" fill="#D9480F"/><text x="586" y="259">2</text>
+    <circle cx="903" cy="310" r="12" fill="#D9480F"/><text x="903" y="315">3</text>
+    <circle cx="942" cy="320" r="12" fill="#D9480F"/><text x="942" y="325">4</text>
+    <circle cx="1132" cy="208" r="12" fill="#D9480F"/><text x="1132" y="213">5</text>
+    <circle cx="1132" cy="330" r="12" fill="#D9480F"/><text x="1132" y="335">6</text>
+    <circle cx="1352" cy="452" r="12" fill="#D9480F"/><text x="1352" y="457">7</text>
+    <circle cx="1508" cy="376" r="12" fill="#D9480F"/><text x="1508" y="381">8</text>
+    <circle cx="410" cy="714" r="12" fill="#2B8A3E"/><text x="410" y="719">A</text>
+    <circle cx="1212" cy="642" r="12" fill="#2B8A3E"/><text x="1212" y="647">B</text>
+    <circle cx="1212" cy="782" r="12" fill="#2B8A3E"/><text x="1212" y="787">C</text>
+  </g>
+
+  <!-- ============ LEGENDA ============ -->
+  <line x1="40" y1="860" x2="1560" y2="860" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="40" y="892" font-size="15" font-weight="700" fill="#D9480F">Esteira CI/CD (ordem de execução)</text>
+  <g font-size="12.5" fill="#111827">
+    <text x="40" y="918">1  Desenvolvedor altera o código e faz git push na branch master do GitHub.</text>
+    <text x="40" y="940">2  O push dispara automaticamente o pipeline no Azure DevOps (trigger: master).</text>
+    <text x="40" y="962">3  CI: Maven compila o projeto com JDK 17 e roda os testes JUnit; resultados vão para a aba Tests.</text>
+    <text x="40" y="984">4  CI: com os testes verdes, o futurevet.jar é publicado como artefato (futurevet-jar).</text>
+    <text x="40" y="1006">5  CD: o estágio de deploy só inicia depois que o artefato novo existe (dependsOn: CI).</text>
+    <text x="40" y="1028">6  CD: lê as variáveis protegidas do Variable Group futurevet-secrets (cadeado, valores mascarados).</text>
+    <text x="40" y="1050">7  CD: Azure CLI aplica as App Settings e publica o .jar no Azure Web App (az webapp deploy).</text>
+    <text x="40" y="1072">8  CD: health check em /actuator/health confirma a aplicação UP com o banco conectado.</text>
+  </g>
+  <text x="900" y="892" font-size="15" font-weight="700" fill="#2B8A3E">Uso da aplicação</text>
+  <g font-size="12.5" fill="#111827">
+    <text x="900" y="918">A  Tutor e clínica acessam o FutureVet por HTTPS (web e API REST com JWT).</text>
+    <text x="900" y="940">B  O Web App faz o CRUD de pets, vacinas e consultas no Oracle da FIAP via JDBC.</text>
+    <text x="900" y="962">C  O assistente de IA é chamado via OpenFeign no microsserviço futurevet-ia.</text>
+  </g>
+  <text x="900" y="1000" font-size="15" font-weight="700" fill="#374151">Ferramentas</text>
+  <g font-size="12.5" fill="#111827">
+    <text x="900" y="1026">GitHub (código) · Azure DevOps (pipelines, library, environments, testes)</text>
+    <text x="900" y="1048">Maven + JUnit (build e testes) · Azure CLI (infra e deploy) · App Service (execução)</text>
+    <text x="900" y="1070">Oracle FIAP (dados) · Render (microsserviço de IA) · Actuator (monitoramento)</text>
+  </g>
+</svg>

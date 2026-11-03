@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{monitoramento.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{nav.secao-clinica}">ÁREA DA CLÍNICA</div>
+          <h1 th:text="#{monitoramento.titulo}">Monitoramento</h1>
+          <p th:text="#{monitoramento.subtitulo}">Saúde da plataforma em tempo real, via Spring Boot Actuator.</p>
+        </div>
+        <a class="button secondary" th:href="@{/admin/monitoramento}" th:text="#{monitoramento.atualizar}">Atualizar ↻</a>
+      </header>
+
+      <section class="servicos" th:aria-label="#{monitoramento.servicos}">
+        <article th:with="s=${painel.statusAplicacao}" th:classappend="${s}">
+          <span th:text="#{monitoramento.aplicacao}">Aplicação</span><strong th:text="#{status.__${s}__}">UP</strong><small>/actuator/health</small>
+        </article>
+        <article th:with="s=${painel.statusBanco}" th:classappend="${s}">
+          <span th:text="#{monitoramento.banco}">Banco de dados</span><strong th:text="#{status.__${s}__}">UP</strong><small th:text="#{monitoramento.banco.dica}">Oracle / H2</small>
+        </article>
+        <article th:with="s=${painel.statusIa}" th:classappend="${s}">
+          <span th:text="#{monitoramento.ia}">Microsserviço de IA</span><strong th:text="#{status.__${s}__}">UP</strong><small>futurevet-ia</small>
+        </article>
+        <article th:with="s=${painel.rabbitAtivo} ? ${painel.statusRabbit} : 'LOCAL'" th:classappend="${s}">
+          <span th:text="#{monitoramento.rabbit}">Mensageria</span><strong th:text="#{status.__${s}__}">UP</strong><small th:text="${painel.rabbitAtivo} ? 'RabbitMQ' : #{monitoramento.rabbit.local}">RabbitMQ</small>
+        </article>
+      </section>
+
+      <section class="stats metricas">
+        <article>
+          <span th:text="#{monitoramento.memoria}">Memória da JVM</span>
+          <strong><span th:text="${#numbers.formatDecimal(painel.memoriaUsadaMb, 1, 'DEFAULT', 0, 'DEFAULT')}">120</span> <small>MB</small></strong>
+          <div class="barra" role="img" th:aria-label="#{monitoramento.memoria}">
+            <i th:style="'width:' + ${painel.memoriaPct()} + '%'"></i>
+          </div>
+          <small th:text="#{monitoramento.memoria.max(${#numbers.formatDecimal(painel.memoriaMaximaMb, 1, 'DEFAULT', 0, 'DEFAULT')})}">de 512 MB</small>
+        </article>
+        <article>
+          <span th:text="#{monitoramento.cpu}">Uso de CPU</span>
+          <strong><span th:text="${#numbers.formatDecimal(painel.cpuProcessoPct, 1, 'DEFAULT', 1, 'DEFAULT')}">2</span> <small>%</small></strong>
+          <small th:text="#{monitoramento.cpu.sistema(${#numbers.formatDecimal(painel.cpuSistemaPct, 1, 'DEFAULT', 1, 'DEFAULT')})}">Máquina: 10%</small>
+        </article>
+        <article>
+          <span th:text="#{monitoramento.uptime}">No ar há</span>
+          <strong><span th:text="${#numbers.formatDecimal(painel.minutosAtivo, 1, 'DEFAULT', 0, 'DEFAULT')}">42</span> <small>min</small></strong>
+          <small th:text="#{monitoramento.requisicoes(${painel.requisicoesHttp})}">1.200 requisições</small>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading"><h2 th:text="#{monitoramento.notificacoes}">Eventos processados</h2></div>
+        <div class="canais">
+          <div><strong th:text="${#numbers.formatDecimal(painel.notificacoesRabbit, 1, 'DEFAULT', 0, 'DEFAULT')}">0</strong><span th:text="#{monitoramento.canal.rabbit}">pela fila do RabbitMQ</span></div>
+          <div><strong th:text="${#numbers.formatDecimal(painel.notificacoesLocais, 1, 'DEFAULT', 0, 'DEFAULT')}">0</strong><span th:text="#{monitoramento.canal.local}">entregues direto (sem broker)</span></div>
+        </div>
+        <p class="dica-canal" th:text="#{monitoramento.endpoints}">Endpoints do Actuator: /actuator/health, /actuator/info e /actuator/metrics.</p>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

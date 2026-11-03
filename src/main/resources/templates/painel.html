@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{painel.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{painel.eyebrow}">SEU ESPAÇO DE CUIDADO</div>
+          <h1 th:text="#{painel.ola(${usuario.nome})}">Olá.</h1>
+          <p th:text="${usuario.admin()} ? #{painel.subtitulo.clinica} : #{painel.subtitulo.tutor}">Um olhar atento.</p>
+        </div>
+        <a class="button" th:href="@{/consultas/nova}" th:text="#{acao.agendar}">+ Agendar consulta</a>
+      </header>
+
+      <div class="alert info" role="status" th:if="${usuario.admin() and aguardandoConfirmacao > 0}">
+        <span th:text="#{painel.aguardando(${aguardandoConfirmacao})}">2 consultas aguardam confirmação.</span>
+        <a th:href="@{/consultas}" th:text="#{painel.ver-agenda}">Ver agenda →</a>
+      </div>
+
+      <section class="hero">
+        <div>
+          <span class="pill" th:text="#{nav.secao}">CUIDADO CONTÍNUO</span>
+          <h2 th:utext="#{painel.hero.titulo}">Pequenos cuidados.<br>Uma vida inteira de companhia.</h2>
+          <p th:text="#{painel.hero.texto}">Acompanhe a prevenção.</p>
+          <div class="hero-links">
+            <a th:href="@{/vacinas}" class="text-link" th:text="#{painel.hero.link}">Conferir carteira de vacinação ↗</a>
+            <a th:href="@{/assistente}" class="text-link" th:text="#{painel.hero.assistente}">Perguntar ao Assistente Vet ✦</a>
+          </div>
+        </div>
+        <div class="hero-stamp" aria-hidden="true">♡<small th:utext="#{painel.hero.selo}">juntos em<br>cada fase</small></div>
+      </section>
+
+      <section class="stats">
+        <article>
+          <span th:text="#{painel.stats.animais}">Animais acompanhados</span>
+          <strong th:text="${totalAnimais}">0</strong>
+          <small th:text="#{painel.stats.animais.dica}">Perfis e histórico de cuidado</small>
+        </article>
+        <article>
+          <span th:text="#{painel.stats.consultas}">Consultas pela frente</span>
+          <strong th:text="${totalConsultas}">0</strong>
+          <small th:text="#{painel.stats.consultas.dica}">Solicitadas e confirmadas</small>
+        </article>
+        <article th:classappend="${pendencias > 0} ? 'atencao'">
+          <span th:text="#{painel.stats.vacinas}">Vacinas para acompanhar</span>
+          <strong th:text="${pendencias}">0</strong>
+          <small th:text="#{painel.stats.vacinas.dica}">Atrasadas ou previstas em até 30 dias</small>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <h2 th:text="#{painel.proximas}">Próximas consultas</h2>
+          <a th:href="@{/consultas}" th:text="#{painel.ver-agenda}">Ver agenda →</a>
+        </div>
+        <p class="empty" th:if="${#lists.isEmpty(consultas)}" th:text="#{painel.agenda-livre}">Sua agenda está livre.</p>
+        <div class="appointment" th:each="c : ${consultas}">
+          <div class="date-block">
+            <strong th:text="${#temporals.format(c.data, 'dd')}">12</strong>
+            <small th:text="${#temporals.format(c.data, #messages.msg('formato.mes-ano'))}">11/2026</small>
+          </div>
+          <div>
+            <strong th:text="${c.animal}">Bento</strong>
+            <p th:text="${c.tipo} + ' · ' + (${c.local} ?: #{geral.local-nao-informado})">Consulta</p>
+          </div>
+          <span th:text="${c.hora} ?: #{geral.sem-horario}">10:00</span>
+          <span class="badge" th:classappend="${c.status.name()}" th:text="#{consulta.status.__${c.status}__}">Status</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <h2 th:text="#{painel.companheiros}">Companheiros de jornada</h2>
+          <a th:href="@{/animais}" th:text="#{painel.ver-animais}">Ver animais →</a>
+        </div>
+        <p class="empty" th:if="${#lists.isEmpty(animais)}" th:text="#{painel.sem-animais}">Cadastre seu primeiro animal.</p>
+        <div class="pet-grid">
+          <article class="pet-card" th:each="a : ${animais}">
+            <div class="pet-avatar" aria-hidden="true" th:text="${a.especie == 'GATO'} ? '♧' : '♡'">♡</div>
+            <h3 th:text="${a.nome}">Bento</h3>
+            <p th:text="#{especie.__${a.especie}__} + ' · ' + (${a.idade} ?: #{geral.idade-nao-informada})">Cão</p>
+            <a th:href="@{/animais/{id}/editar(id=${a.id})}" th:text="#{painel.ver-perfil}">Ver perfil ↗</a>
+          </article>
+        </div>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

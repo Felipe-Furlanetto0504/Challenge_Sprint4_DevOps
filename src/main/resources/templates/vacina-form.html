@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{vacina-form.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{form.eyebrow}">CUIDADO EM CADA DETALHE</div>
+          <h1 th:text="#{vacina-form.titulo}">Registro de vacinação</h1>
+          <p th:text="#{form.instrucao}">Preencha as informações abaixo.</p>
+        </div>
+      </header>
+      <section class="panel form-panel">
+        <form th:action="@{/vacinas/salvar}" method="post" th:object="${form}">
+          <div th:replace="~{layout :: errors}"></div>
+          <input th:if="${id != null}" type="hidden" name="id" th:value="${id}">
+          <div class="form-grid">
+            <label><span th:text="#{campo.animalId}">Animal</span>
+              <select th:field="*{animalId}" required th:errorclass="invalido">
+                <option value="" th:text="#{geral.selecione}">Selecione</option>
+                <option th:each="a : ${animais}" th:value="${a.id}" th:text="${usuario.admin()} ? ${a.nome} + ' · ' + ${a.tutor} : ${a.nome}">Bento</option>
+              </select></label>
+            <label><span th:text="#{campo.nome-vacina}">Nome da vacina</span>
+              <input type="text" th:field="*{nome}" required maxlength="30" th:placeholder="#{vacina-form.nome.exemplo}" th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.data-aplicacao}">Data de aplicação</span>
+              <input type="date" th:field="*{data}" required th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.proximaDose} + ' ' + #{geral.opcional}">Próxima dose (opcional)</span>
+              <input type="date" th:field="*{proximaDose}" th:errorclass="invalido"></label>
+            <label><span th:text="#{campo.local-vacinacao} + ' ' + #{geral.opcional}">Local de vacinação (opcional)</span>
+              <input type="text" th:field="*{local}" maxlength="100"></label>
+          </div>
+          <div class="form-actions">
+            <a class="button secondary" th:href="@{/vacinas}" th:text="#{acao.voltar}">Voltar</a>
+            <button class="button" th:text="#{acao.salvar}">Salvar →</button>
+          </div>
+        </form>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>

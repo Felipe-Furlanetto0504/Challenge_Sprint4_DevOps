@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head(#{vacinas.titulo})}"></head>
+  <body>
+    <aside th:replace="~{layout :: nav}"></aside>
+    <main class="main">
+      <div th:replace="~{layout :: alerts}"></div>
+      <header class="page-header">
+        <div>
+          <div class="eyebrow" th:text="#{vacinas.eyebrow}">PREVENIR É UM GESTO DE CARINHO</div>
+          <h1 th:text="#{vacinas.titulo}">Carteira de vacinação</h1>
+          <p th:text="#{vacinas.subtitulo}">Histórico, próximas doses e reforços em um só lugar.</p>
+        </div>
+        <a class="button" th:href="@{/vacinas/nova}" th:text="#{vacinas.nova}">+ Registrar vacina</a>
+      </header>
+      <section class="stats">
+        <article th:classappend="${atrasadas > 0} ? 'atencao'">
+          <span th:text="#{vacinas.stats.atrasadas}">Precisam de atenção</span>
+          <strong th:text="${atrasadas}">0</strong>
+          <small th:text="#{vacinas.stats.atrasadas.dica}">Doses com previsão vencida</small>
+        </article>
+        <article>
+          <span th:text="#{vacinas.stats.proximas}">Próximos 30 dias</span>
+          <strong th:text="${proximas}">0</strong>
+          <small th:text="#{vacinas.stats.proximas.dica}">Planeje o próximo cuidado</small>
+        </article>
+        <article>
+          <span th:text="#{vacinas.stats.registros}">Registros na carteira</span>
+          <strong th:text="${#lists.size(itens)}">0</strong>
+          <small th:text="#{vacinas.stats.registros.dica}">Inclui histórico de aplicações</small>
+        </article>
+      </section>
+      <section class="panel">
+        <p class="empty" th:if="${#lists.isEmpty(itens)}" th:text="#{vacinas.vazio}">Registre a primeira vacina.</p>
+        <article class="consult-card" th:each="i : ${itens}">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow" th:text="${i.vacina.animal}">Bento</span>
+              <h2 th:text="${i.vacina.nome}">V10</h2>
+            </div>
+            <span class="badge" th:classappend="${i.situacao.name()}" th:text="#{vacina.situacao.__${i.situacao}__}">Em dia</span>
+          </div>
+          <p th:text="#{vacinas.aplicada(${#temporals.format(i.vacina.data, #messages.msg('formato.data'))}, ${i.vacina.local} ?: #{geral.local-nao-informado})}">Aplicada em</p>
+          <p th:if="${i.vacina.proximaDose != null}" th:text="#{vacinas.previsao(${#temporals.format(i.vacina.proximaDose, #messages.msg('formato.data'))})}">Previsão</p>
+          <p th:if="${i.situacao.name() == 'SEM_PREVISAO'}" th:text="#{vacinas.sem-previsao}">Próxima dose não informada.</p>
+          <p th:if="${i.situacao.name() == 'HISTORICO'}" th:text="#{vacinas.historico}">Esta aplicação já possui reforço registrado.</p>
+          <div class="actions">
+            <a th:if="${!i.vacina.substituida}" class="button" th:href="@{/vacinas/{id}/reforco(id=${i.vacina.id})}" th:text="#{vacinas.reforco}">Registrar reforço →</a>
+            <a th:if="${!i.vacina.vinculadaAReforco()}" class="button secondary" th:href="@{/vacinas/{id}/editar(id=${i.vacina.id})}" th:text="#{acao.editar}">Editar</a>
+            <details th:if="${!i.vacina.vinculadaAReforco()}">
+              <summary th:text="#{acao.excluir}">Excluir</summary>
+              <p th:text="#{vacinas.excluir.confirmacao}">Excluir este registro de vacinação?</p>
+              <form th:action="@{/vacinas/{id}/excluir(id=${i.vacina.id})}" method="post">
+                <button class="button danger-button" th:text="#{acao.confirmar-exclusao}">Confirmar exclusão</button>
+              </form>
+            </details>
+          </div>
+        </article>
+      </section>
+      <footer th:replace="~{layout :: rodape}"></footer>
+    </main>
+  </body>
+</html>
