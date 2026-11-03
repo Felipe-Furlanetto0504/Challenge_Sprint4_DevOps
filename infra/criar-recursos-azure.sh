@@ -6,7 +6,7 @@
 #        + configurações da aplicação (perfil Oracle, porta, HTTPS, health check, logs)
 #
 #  Rode no Azure Cloud Shell (bash) ou em qualquer terminal com `az login` feito:
-#     RM=562766 LOCATION=brazilsouth bash infra/criar-recursos-azure.sh
+#     RM=562766 LOCATION=eastus bash infra/criar-recursos-azure.sh
 #
 #  O banco é o Oracle da FIAP (PaaS aceito pela disciplina) — não é criado aqui.
 #  Usuário/senha do banco e a chave JWT NÃO estão neste script: o pipeline de CD
@@ -15,7 +15,7 @@
 set -euo pipefail
 
 RM="${RM:-562766}"                      # sufixo dos nomes (RM do Felipe, dono da assinatura Azure)
-LOCATION="${LOCATION:-brazilsouth}"     # se a assinatura bloquear a região, use eastus
+LOCATION="${LOCATION:-eastus}"          # região permitida pela assinatura Azure for Students
 SKU="${SKU:-B1}"                        # B1 aguenta o Spring Boot; F1 é lento demais
 
 RG="rg-futurevet-$RM"

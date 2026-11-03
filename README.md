@@ -117,21 +117,21 @@ No Azure Cloud Shell (bash):
 ```bash
 git clone https://github.com/joaocaetano1310/Challenge_Sprint4_DevOps.git
 cd Challenge_Sprint4_DevOps
-RM=562766 LOCATION=brazilsouth bash infra/criar-recursos-azure.sh
+RM=562766 LOCATION=eastus bash infra/criar-recursos-azure.sh
 ```
 
 O script cria, nesta ordem:
 
 | Recurso | Nome | Comando |
 |---|---|---|
-| Grupo de recursos | `rg-futurevet-562766` | `az group create` |
+| Grupo de recursos (East US) | `rg-futurevet-562766` | `az group create` |
 | Plano do App Service (Linux, B1) | `plan-futurevet-562766` | `az appservice plan create --is-linux --sku B1` |
 | Web App Java 17 | `futurevet-562766` | `az webapp create --runtime "JAVA:17-java17"` |
 | HTTPS obrigatório, TLS 1.2, Always On, health check | — | `az webapp update` / `az webapp config set` |
 | Configurações da aplicação (perfil `oracle`, porta 80, Flyway etc.) | — | `az webapp config appsettings set` |
 | Logs da aplicação | — | `az webapp log config` |
 
-> Se a assinatura bloquear a região `brazilsouth`, rode com `LOCATION=eastus`. Se o Web App for criado com outro RM no nome, ajuste as variáveis `resourceGroup` e `webAppName` no topo do `azure-pipelines.yml`.
+> A assinatura Azure for Students só aceita algumas regiões (`brazilsouth` é bloqueada). Para ver as permitidas: `az policy assignment list --query "[].parameters.listOfAllowedLocations.value" -o tsv`. Os recursos deste projeto estão em **`eastus`**. Se o Web App for criado com outro RM no nome, ajuste as variáveis `resourceGroup` e `webAppName` no topo do `azure-pipelines.yml`.
 
 ### 5.4 Projeto no Azure DevOps
 
