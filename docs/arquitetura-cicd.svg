@@ -56,7 +56,7 @@
   <!-- CI -->
   <rect x="625" y="172" width="305" height="258" rx="12" fill="#FFFFFF" stroke="#0B5CAD"/>
   <text x="641" y="196" font-size="14" font-weight="700" fill="#0B3D73">Estágio CI</text>
-  <text x="641" y="213" font-size="11.5" fill="#4B5563">agente ubuntu-latest · JDK 17</text>
+  <text x="641" y="213" font-size="11.5" fill="#4B5563">agente self-hosted (VM Linux na Azure) · JDK 17</text>
   <rect x="641" y="226" width="273" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
   <text x="655" y="249" font-size="12.5" fill="#111827">Checkout do repositório</text>
   <rect x="641" y="270" width="273" height="36" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
@@ -103,7 +103,7 @@
   <!-- ============ AZURE ============ -->
   <rect x="600" y="500" width="620" height="330" rx="14" fill="#E7F3FF" stroke="#0078D4" stroke-width="2"/>
   <text x="620" y="528" font-size="15" font-weight="700" fill="#004E8C">Microsoft Azure · rg-futurevet-562766</text>
-  <text x="620" y="546" font-size="12" fill="#2F5F8A">recursos criados com Azure CLI (infra/criar-recursos-azure.sh)</text>
+  <text x="620" y="546" font-size="12" fill="#2F5F8A">Web App + VM do agente de build, criados com Azure CLI (infra/)</text>
   <rect x="625" y="560" width="570" height="252" rx="12" fill="#F4FAFF" stroke="#4A9BE0" stroke-dasharray="6 4"/>
   <text x="641" y="582" font-size="12.5" font-weight="700" fill="#004E8C">App Service Plan · plan-futurevet-562766 (Linux B1)</text>
   <rect x="655" y="596" width="510" height="200" rx="12" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
@@ -197,7 +197,7 @@
   <g font-size="12.5" fill="#111827">
     <text x="40" y="918">1  Desenvolvedor altera o código e faz git push na branch master do GitHub.</text>
     <text x="40" y="940">2  O push dispara automaticamente o pipeline no Azure DevOps (trigger: master).</text>
-    <text x="40" y="962">3  CI: Maven compila o projeto com JDK 17 e roda os testes JUnit; resultados vão para a aba Tests.</text>
+    <text x="40" y="962">3  CI (agente na VM Linux): Maven compila com JDK 17 e roda os testes JUnit; resultados na aba Tests.</text>
     <text x="40" y="984">4  CI: com os testes verdes, o futurevet.jar é publicado como artefato (futurevet-jar).</text>
     <text x="40" y="1006">5  CD: o estágio de deploy só inicia depois que o artefato novo existe (dependsOn: CI).</text>
     <text x="40" y="1028">6  CD: lê as variáveis protegidas do Variable Group futurevet-secrets (cadeado, valores mascarados).</text>

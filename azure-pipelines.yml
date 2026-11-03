@@ -34,10 +34,10 @@ variables:
     value: futurevet-562766
   - name: artifactName
     value: futurevet-jar
-  # 'false' = agente hospedado da Microsoft (ubuntu-latest)
-  # 'true'  = agente próprio (self-hosted) no pool Default — ver README, seção 5.8
+  # 'true'  = agente próprio (self-hosted): VM Linux na Azure, pool Default — ver README, seção 5.8
+  # 'false' = agente hospedado da Microsoft (ubuntu-latest), quando a organização tiver paralelismo liberado
   - name: usarAgenteProprio
-    value: 'false'
+    value: 'true'
 
 stages:
   # -----------------------------------------------------------------------------------

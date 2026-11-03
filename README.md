@@ -30,8 +30,8 @@ A mesma aplicação expõe uma **API REST com JWT** (`/api/...`) consumida pelo 
 | Integrações | OpenFeign → microsserviço `futurevet-ia` (Spring AI + LLM Groq, hospedado no Render) |
 | Build e testes | Maven · JUnit 5 · Spring Boot Test · MockMvc |
 | Controle de versão | Git + GitHub |
-| CI/CD | **Azure DevOps Pipelines** (YAML multi-stage), Library (variáveis protegidas), Environments |
-| Nuvem | **Azure App Service** (Web App Linux, Java SE 17) · Azure CLI |
+| CI/CD | **Azure DevOps Pipelines** (YAML multi-stage), Library (variáveis protegidas), Environments, agente self-hosted em VM Linux na Azure |
+| Nuvem | **Azure App Service** (Web App Linux, Java SE 17) · Azure Virtual Machine (agente de build) · Azure CLI |
 
 ---
 
@@ -75,6 +75,8 @@ Arquivo vetorial: [`docs/arquitetura-cicd.svg`](docs/arquitetura-cicd.svg). Os n
 ├── azure-pipelines.yml          # pipeline CI/CD (estágios CI e CD)
 ├── infra/
 │   ├── criar-recursos-azure.sh  # Grupo de recursos, Plano, Web App e configurações (Azure CLI)
+│   ├── criar-agente-vm.sh       # VM Linux que roda o agente do Azure Pipelines
+│   ├── agente-setup.sh          # instalação do agente dentro da VM (JDK 17, Maven, Azure CLI)
 │   └── excluir-recursos-azure.sh
 ├── database/
 │   ├── script_bd.sql            # DDL das tabelas
@@ -105,7 +107,7 @@ Arquivo vetorial: [`docs/arquitetura-cicd.svg`](docs/arquitetura-cicd.svg). Os n
 git init -b master
 git add .
 git commit -m "FutureVet: aplicação Spring Boot e documentação base"
-git remote add origin https://github.com/joaocaetano1310/Challenge_Sprint4_DevOps.git
+git remote add origin https://github.com/Felipe-Furlanetto0504/Challenge_Sprint4_DevOps.git
 git push -u origin master
 ```
 Deixe o repositório **público** (ou adicione o professor como colaborador) e confira em *Settings → Branches* que a branch padrão é `master`.
@@ -115,7 +117,7 @@ Deixe o repositório **público** (ou adicione o professor como colaborador) e c
 No Azure Cloud Shell (bash):
 
 ```bash
-git clone https://github.com/joaocaetano1310/Challenge_Sprint4_DevOps.git
+git clone https://github.com/Felipe-Furlanetto0504/Challenge_Sprint4_DevOps.git
 cd Challenge_Sprint4_DevOps
 RM=562766 LOCATION=eastus bash infra/criar-recursos-azure.sh
 ```
@@ -190,16 +192,22 @@ Gerar um `JWT_SECRET`: `openssl rand -base64 48`
 2. **Existing Azure Pipelines YAML file** → branch `master` → `/azure-pipelines.yml` → **Run**.
 3. Na primeira execução o Azure DevOps pede permissão para o Variable Group, a service connection e o environment `futurevet-producao`: clique em **View → Permit** em cada um. A partir daí, todo push de código na `master` roda CI e CD sozinho.
 
-### 5.8 Se aparecer "No hosted parallelism has been purchased or granted"
+### 5.8 Agente de build: VM Linux na Azure (self-hosted)
 
-Organizações novas do Azure DevOps podem vir sem o agente gratuito da Microsoft. Duas saídas:
+A organização do Azure DevOps é nova e não tem o agente gratuito da Microsoft liberado (*"No hosted parallelism has been purchased or granted"*). Por isso o pipeline roda num **agente próprio**: uma VM Ubuntu no mesmo grupo de recursos, registrada no pool **Default**. O `azure-pipelines.yml` usa esse pool com `usarAgenteProprio: 'true'`.
 
-1. **Pedir a liberação gratuita** em https://aka.ms/azpipelines-parallelism-request (leva alguns dias úteis).
-2. **Usar um agente próprio** (imediato), numa máquina Linux ou no Ubuntu do WSL:
-   - Instale JDK 17, Maven e Azure CLI: `sudo apt install -y openjdk-17-jdk maven && curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash`
-   - Exporte o JDK para a task do Maven: `echo 'export JAVA_HOME_17_X64=/usr/lib/jvm/java-17-openjdk-amd64' >> ~/.bashrc && source ~/.bashrc`
-   - *Organization settings → Agent pools → Default → New agent → Linux*: baixe, rode `./config.sh` (URL da organização + Personal Access Token com escopo *Agent Pools: Read & manage*) e depois `./run.sh`
-   - No `azure-pipelines.yml`, troque `usarAgenteProprio` para `'true'` e faça o push
+1. Crie um **Personal Access Token**: *User settings → Personal access tokens → New Token* → escopo **Agent Pools: Read & manage**, validade de 7 dias. Copie o token.
+2. No Azure Cloud Shell, na pasta do repositório:
+   ```bash
+   git pull
+   AZP_URL=https://dev.azure.com/RM562766 AZP_TOKEN=<token> bash infra/criar-agente-vm.sh
+   ```
+   O script cria a VM `vm-agente-futurevet-562766` (Standard_B2s, **sem nenhuma porta de entrada aberta**) e, via `az vm run-command`, roda o [`infra/agente-setup.sh`](infra/agente-setup.sh), que instala JDK 17, Maven e Azure CLI e registra o agente como serviço.
+3. Confira em *Organization settings → Agent pools → Default → Agents*: **agente-futurevet** com status **Online**.
+
+Para economizar créditos depois da gravação: `az vm deallocate -g rg-futurevet-562766 -n vm-agente-futurevet-562766`. Para religar: `az vm start ...` com os mesmos parâmetros.
+
+> Quando a organização tiver o paralelismo gratuito liberado (pedido em https://aka.ms/azpipelines-parallelism-request), basta trocar `usarAgenteProprio` para `'false'` e o pipeline volta a usar o agente `ubuntu-latest` da Microsoft.
 
 ---
 
@@ -211,6 +219,7 @@ Arquivo: [`azure-pipelines.yml`](azure-pipelines.yml) — YAML multi-stage.
 
 | Task | O que faz |
 |---|---|
+| Pool | Agente self-hosted `agente-futurevet` (VM Linux na Azure, pool Default) |
 | `checkout: self` | Baixa o código da `master` |
 | `Maven@4` (`clean package`, JDK 17) | Compila e roda **todos os testes JUnit**; publica os resultados na aba **Tests** (`publishJUnitResults`). Se um teste falhar, o build para e nenhum artefato é gerado |
 | `CopyFiles@2` | Separa o `target/futurevet.jar` |
