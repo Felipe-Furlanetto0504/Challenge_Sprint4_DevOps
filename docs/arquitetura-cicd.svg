@@ -102,13 +102,13 @@
 
   <!-- ============ AZURE ============ -->
   <rect x="600" y="500" width="620" height="330" rx="14" fill="#E7F3FF" stroke="#0078D4" stroke-width="2"/>
-  <text x="620" y="528" font-size="15" font-weight="700" fill="#004E8C">Microsoft Azure · rg-futurevet-562074</text>
+  <text x="620" y="528" font-size="15" font-weight="700" fill="#004E8C">Microsoft Azure · rg-futurevet-562766</text>
   <text x="620" y="546" font-size="12" fill="#2F5F8A">recursos criados com Azure CLI (infra/criar-recursos-azure.sh)</text>
   <rect x="625" y="560" width="570" height="252" rx="12" fill="#F4FAFF" stroke="#4A9BE0" stroke-dasharray="6 4"/>
-  <text x="641" y="582" font-size="12.5" font-weight="700" fill="#004E8C">App Service Plan · plan-futurevet-562074 (Linux B1)</text>
+  <text x="641" y="582" font-size="12.5" font-weight="700" fill="#004E8C">App Service Plan · plan-futurevet-562766 (Linux B1)</text>
   <rect x="655" y="596" width="510" height="200" rx="12" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
-  <text x="673" y="622" font-size="15" font-weight="700" fill="#111827">Azure Web App · futurevet-562074</text>
-  <text x="673" y="641" font-size="12" fill="#4B5563">Java 17 (Java SE) · Spring Boot 3.5 · https://futurevet-562074.azurewebsites.net</text>
+  <text x="673" y="622" font-size="15" font-weight="700" fill="#111827">Azure Web App · futurevet-562766</text>
+  <text x="673" y="641" font-size="12" fill="#4B5563">Java 17 (Java SE) · Spring Boot 3.5 · https://futurevet-562766.azurewebsites.net</text>
   <rect x="673" y="654" width="232" height="56" rx="8" fill="#F5F8FC" stroke="#C9D8EA"/>
   <text x="685" y="676" font-size="12" font-weight="700" fill="#111827">Web (Thymeleaf)</text>
   <text x="685" y="696" font-size="11.5" fill="#374151">pets, vacinas, consultas</text>

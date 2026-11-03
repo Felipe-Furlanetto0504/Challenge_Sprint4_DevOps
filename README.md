@@ -5,7 +5,7 @@ A cada alteração de código na branch `master`, o pipeline compila a aplicaç�
 
 | | |
 |---|---|
-| Aplicação no ar | https://futurevet-562074.azurewebsites.net |
+| Aplicação no ar | https://futurevet-562766.azurewebsites.net |
 | Projeto no Azure DevOps | _link do projeto "Sprint 4 – Azure DevOps"_ |
 | Vídeo de demonstração | _link do YouTube_ |
 | Disciplina base | Java Advanced (Spring Boot) |
@@ -117,16 +117,16 @@ No Azure Cloud Shell (bash):
 ```bash
 git clone https://github.com/joaocaetano1310/Challenge_Sprint4_DevOps.git
 cd Challenge_Sprint4_DevOps
-RM=562074 LOCATION=brazilsouth bash infra/criar-recursos-azure.sh
+RM=562766 LOCATION=brazilsouth bash infra/criar-recursos-azure.sh
 ```
 
 O script cria, nesta ordem:
 
 | Recurso | Nome | Comando |
 |---|---|---|
-| Grupo de recursos | `rg-futurevet-562074` | `az group create` |
-| Plano do App Service (Linux, B1) | `plan-futurevet-562074` | `az appservice plan create --is-linux --sku B1` |
-| Web App Java 17 | `futurevet-562074` | `az webapp create --runtime "JAVA:17-java17"` |
+| Grupo de recursos | `rg-futurevet-562766` | `az group create` |
+| Plano do App Service (Linux, B1) | `plan-futurevet-562766` | `az appservice plan create --is-linux --sku B1` |
+| Web App Java 17 | `futurevet-562766` | `az webapp create --runtime "JAVA:17-java17"` |
 | HTTPS obrigatório, TLS 1.2, Always On, health check | — | `az webapp update` / `az webapp config set` |
 | Configurações da aplicação (perfil `oracle`, porta 80, Flyway etc.) | — | `az webapp config appsettings set` |
 | Logs da aplicação | — | `az webapp log config` |
@@ -162,7 +162,7 @@ RM564002 - Raul Rezende Iemini Aguiar - 2TDSPF
 *Project settings → Service connections → New service connection → Azure Resource Manager*:
 
 - Identity type: **App registration (automatic)** · Credential: **Workload identity federation**
-- Scope level: **Subscription** → escolha a assinatura → Resource group: `rg-futurevet-562074`
+- Scope level: **Subscription** → escolha a assinatura → Resource group: `rg-futurevet-562766`
 - Service connection name: **`sc-azure-futurevet`**
 - Marque **Grant access permission to all pipelines**
 
@@ -223,7 +223,7 @@ Arquivo: [`azure-pipelines.yml`](azure-pipelines.yml) — YAML multi-stage.
 | `download: current` | Baixa o artefato que o CI acabou de gerar |
 | `AzureCLI@2` — App Settings | Grava `DB_URL`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET` (vindos da Library, mascarados no log) e o número do build (`INFO_APP_BUILD`, visível em `/actuator/info`) |
 | `AzureCLI@2` — deploy | `az webapp deploy --type jar`: publica o `.jar` no Web App e reinicia a aplicação |
-| Health check | Consulta `https://futurevet-562074.azurewebsites.net/actuator/health` até receber `UP`; se não subir, o pipeline falha |
+| Health check | Consulta `https://futurevet-562766.azurewebsites.net/actuator/health` até receber `UP`; se não subir, o pipeline falha |
 
 ### Regras obrigatórias da pipeline
 
@@ -235,13 +235,13 @@ Arquivo: [`azure-pipelines.yml`](azure-pipelines.yml) — YAML multi-stage.
 | IV. Variáveis sensíveis protegidas | Variable Group `futurevet-secrets` com cadeado; mapeadas no `env:` da task e mascaradas (`***`) nos logs |
 | V. Artefato gerado e publicado | `PublishPipelineArtifact@1` → `futurevet-jar` |
 | VI. Etapa de testes no CI | `Maven@4` roda os testes e publica os resultados (`publishJUnitResults: true`) |
-| VII. Deploy em Azure Web App | `az webapp deploy` no Web App `futurevet-562074` |
+| VII. Deploy em Azure Web App | `az webapp deploy` no Web App `futurevet-562766` |
 
 ---
 
 ## 7. Testes automatizados
 
-Ficam em `src/test/java/com/futurevet` e rodam no CI a cada push:
+Ficam em `src/test/java/com/futurevet` e rodam no CI a cada push — **38 testes, 0 falhas** (`mvn clean package` validado em 03/11/2026):
 
 | Classe | O que cobre |
 |---|---|
@@ -256,7 +256,7 @@ Rodar localmente: `./mvnw test` (Windows: `mvnw.cmd test`).
 
 ## 8. Testando a aplicação na nuvem (CRUD + evidência no banco)
 
-URL: **https://futurevet-562074.azurewebsites.net**
+URL: **https://futurevet-562766.azurewebsites.net**
 
 1. **Cadastre-se** (`/registro`) como tutor e faça login.
 2. **Create** — *Animais → + Cadastrar animal*: Thor · Cão · Labrador · 3 anos · Médio · 12,5 kg. Depois, *Vacinas → nova*: V10 para o Thor, data de hoje, próxima dose daqui a um ano.
@@ -290,7 +290,7 @@ Também é possível pela API REST (Swagger em `/swagger-ui.html`): `POST /api/a
 Depois da correção, para não consumir créditos:
 
 ```bash
-RM=562074 bash infra/excluir-recursos-azure.sh
+RM=562766 bash infra/excluir-recursos-azure.sh
 ```
 
 ---

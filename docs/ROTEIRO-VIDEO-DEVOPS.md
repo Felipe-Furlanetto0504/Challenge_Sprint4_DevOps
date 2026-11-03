@@ -5,7 +5,7 @@ Requisitos do vídeo: **720p ou mais**, áudio claro, **explicação por voz** (
 ## Antes de gravar (checklist)
 
 - [ ] Recursos criados com `infra/criar-recursos-azure.sh` e **um primeiro pipeline já executado com sucesso** (permissões do Variable Group, service connection e environment já liberadas — o pedido "Permit" não pode aparecer no meio do vídeo)
-- [ ] Abas abertas: **IDE** com o projeto · **GitHub** do repositório · **Azure DevOps** (Pipelines, Library) · **Portal Azure** no Web App `futurevet-562074` · **SQL Developer** conectado ao Oracle FIAP com `database/crud-evidencias.sql` aberto · **app** em `https://futurevet-562074.azurewebsites.net`
+- [ ] Abas abertas: **IDE** com o projeto · **GitHub** do repositório · **Azure DevOps** (Pipelines, Library) · **Portal Azure** no Web App `futurevet-562766` · **SQL Developer** conectado ao Oracle FIAP com `database/crud-evidencias.sql` aberto · **app** em `https://futurevet-562766.azurewebsites.net`
 - [ ] `git push` testado (credencial do GitHub salva na máquina)
 - [ ] Conta de tutor de teste criada **ou** pronta para criar no vídeo; pet "Thor" ainda **não** existe no banco
 - [ ] Microfone testado, resolução da tela em 1080p, zoom do navegador em 110–125%
@@ -24,7 +24,7 @@ Passe por cada aba dizendo o papel de cada uma:
 - **IDE** — código Spring Boot e o `azure-pipelines.yml`
 - **GitHub** — repositório, branch `master`
 - **Azure DevOps** — projeto *Sprint 4 – Azure DevOps* (mostre *Project settings → Overview*: nome, descrição, visibilidade Private, processo Scrum)
-- **Portal Azure** — grupo `rg-futurevet-562074`: plano do App Service e Web App
+- **Portal Azure** — grupo `rg-futurevet-562766`: plano do App Service e Web App
 - **SQL Developer** — Oracle da FIAP
 
 ## 3. Configuração da pipeline (≈2–3 min)
@@ -78,13 +78,13 @@ Na página da execução:
 
 ## 7. Recursos no Portal Azure (≈1 min)
 
-- Grupo `rg-futurevet-562074` → plano e Web App
+- Grupo `rg-futurevet-562766` → plano e Web App
 - Web App → **Overview** (status Running, URL) → **Deployment Center / Deployment logs** (deploy recém-feito) → **Environment variables** (mostre as chaves, valores ocultos)
 - Opcional: **Log stream** com a aplicação subindo
 
 ## 8. Aplicação com a alteração + CRUD com SELECT (≈4 min, sem cortes)
 
-Abra `https://futurevet-562074.azurewebsites.net/login` → mostre o **texto novo** na tela ("a alteração do commit já está em produção"). Mostre também `/actuator/info` com o número do build.
+Abra `https://futurevet-562766.azurewebsites.net/login` → mostre o **texto novo** na tela ("a alteração do commit já está em produção"). Mostre também `/actuator/info` com o número do build.
 
 Faça cada operação e, logo depois, rode o SELECT correspondente de `database/crud-evidencias.sql`:
 
