@@ -142,15 +142,26 @@ stages:
                     scriptType: 'bash'
                     scriptLocation: 'inlineScript'
                     inlineScript: |
-                      set -euo pipefail
-                      # --type jar: o App Service grava o arquivo como /home/site/wwwroot/app.jar e reinicia
-                      az webapp deploy \
-                        --resource-group "$(resourceGroup)" \
-                        --name "$(webAppName)" \
-                        --src-path "$(Pipeline.Workspace)/$(artifactName)/futurevet.jar" \
-                        --type jar \
-                        --restart true \
-                        --track-status false
+                      set -uo pipefail
+                      # --type jar: o App Service grava o arquivo como /home/site/wwwroot/app.jar e reinicia.
+                      # Até 3 tentativas: logo após gravar as App Settings o Web App reinicia e o Kudu
+                      # (serviço de deploy) pode recusar a primeira chamada por alguns segundos.
+                      for TENTATIVA in 1 2 3; do
+                        if az webapp deploy \
+                            --resource-group "$(resourceGroup)" \
+                            --name "$(webAppName)" \
+                            --src-path "$(Pipeline.Workspace)/$(artifactName)/futurevet.jar" \
+                            --type jar \
+                            --restart true \
+                            --track-status false; then
+                          echo "Deploy concluído na tentativa $TENTATIVA."
+                          exit 0
+                        fi
+                        echo "Tentativa $TENTATIVA de deploy falhou; nova tentativa em 45 s..."
+                        sleep 45
+                      done
+                      echo "##vso[task.logissue type=error]Deploy não concluído após 3 tentativas."
+                      exit 1
 
                 - bash: |
                     set -u
