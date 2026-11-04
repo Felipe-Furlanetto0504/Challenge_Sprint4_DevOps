@@ -19,23 +19,31 @@ set -euo pipefail
 
 RM="${RM:-562766}"
 LOCATION="${LOCATION:-eastus}"
-VM_SIZE="${VM_SIZE:-Standard_B2s}"     # 2 vCPU / 4 GB — se faltar capacidade, use Standard_B2ms
+# Tamanhos de 2 vCPU tentados em ordem (a capacidade de cada um varia por região)
+VM_SIZES="${VM_SIZES:-${VM_SIZE:-} Standard_D2s_v3 Standard_B2s Standard_B2ms Standard_B2als_v2 Standard_B2as_v2 Standard_D2s_v3 Standard_D2as_v5 Standard_D2s_v5}"
 RG="rg-futurevet-$RM"
 VM="vm-agente-futurevet-$RM"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo ">> 1/2 Criando a VM $VM ($VM_SIZE, Ubuntu 22.04, sem portas de entrada)"
-az vm create \
-  --resource-group "$RG" \
-  --name "$VM" \
-  --location "$LOCATION" \
-  --image Ubuntu2204 \
-  --size "$VM_SIZE" \
-  --admin-username azureuser \
-  --generate-ssh-keys \
-  --nsg-rule NONE \
-  --public-ip-sku Standard \
-  --output table
+CRIADA=""
+for VM_SIZE in $VM_SIZES; do
+  echo ">> 1/2 Criando a VM $VM ($VM_SIZE, Ubuntu 22.04, sem portas de entrada)"
+  if az vm create \
+      --resource-group "$RG" \
+      --name "$VM" \
+      --location "$LOCATION" \
+      --image Ubuntu2204 \
+      --size "$VM_SIZE" \
+      --admin-username azureuser \
+      --generate-ssh-keys \
+      --nsg-rule NONE \
+      --public-ip-sku Standard \
+      --output table --only-show-errors 2>/tmp/vm-erro.txt; then
+    CRIADA="$VM_SIZE"; break
+  fi
+  echo "   $VM_SIZE indisponível: $(grep -o 'SkuNotAvailable\|QuotaExceeded\|RequestDisallowedByAzure' /tmp/vm-erro.txt | head -1). Tentando o próximo tamanho..."
+done
+[ -n "$CRIADA" ] || { echo "Nenhum tamanho disponível em $LOCATION. Rode com LOCATION=<outra região permitida>."; cat /tmp/vm-erro.txt | tail -5; exit 1; }
 
 echo ">> 2/2 Instalando JDK 17, Maven, Azure CLI e o agente (leva ~5 min)"
 az vm run-command invoke \

@@ -25,7 +25,7 @@ A mesma aplicação expõe uma **API REST com JWT** (`/api/...`) consumida pelo 
 |---|---|
 | Linguagem / framework | Java 17 · Spring Boot 3.5 (Web, Thymeleaf, Validation, Security, JDBC, Actuator) |
 | Autenticação | Spring Security (sessão na web, JWT na API) · perfis TUTOR e ADMIN |
-| Versionamento do banco | Flyway (migrations `V1`…`V4`) |
+| Banco (estrutura) | Script Oracle da disciplina de BD (DDL + carga) · Flyway nos testes e no ambiente local |
 | Banco de dados em nuvem | **Oracle Database da FIAP** (`oracle.fiap.com.br:1521/ORCL`) |
 | Integrações | OpenFeign → microsserviço `futurevet-ia` (Spring AI + LLM Groq, hospedado no Render) |
 | Build e testes | Maven · JUnit 5 · Spring Boot Test · MockMvc |
@@ -60,7 +60,8 @@ Arquivo vetorial: [`docs/arquitetura-cicd.svg`](docs/arquitetura-cicd.svg). Os n
 ## 3. Banco de dados em nuvem
 
 - **Oracle Database da FIAP** (PaaS aceito pela disciplina) — `jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL`.
-- O schema é criado e versionado pelo **Flyway** na subida da aplicação (`src/main/resources/db/migration` e `src/main/java/db/migration`). O DDL completo e comentado está em [`database/script_bd.sql`](database/script_bd.sql).
+- Schema **RM562766**. A estrutura e a carga inicial vêm do script da disciplina de Banco de Dados ([`database/2TDSPF_2026_CodigoSql_Estrutura.sql`](database/2TDSPF_2026_CodigoSql_Estrutura.sql), executado no SQL Developer com F5): o mesmo modelo usado pelo backend Java e pelo app mobile, com senhas em BCrypt, sequences `FV_SEQ_*` e restrições nomeadas.
+- Como o schema já nasce pronto pelo script, as migrations do Flyway ficam **desligadas na nuvem** (`DB_MIGRATIONS_ENABLED=false`); elas continuam sendo usadas nos testes do CI e no ambiente local.
 - Tabelas do CORE usadas no CRUD do vídeo: **`TB_ANIMAL`** (pet) e **`TB_VACINA`** (carteira de vacinação), relacionadas por `ID_ANIMAL`. Também existem `TB_USUARIO`, `TB_CONSULTA` e `TB_FV_NOTIFICACAO`.
 - Usuário e senha do banco **não estão no código**: chegam ao Web App pelo pipeline de CD, a partir de variáveis protegidas.
 
@@ -130,7 +131,7 @@ O script cria, nesta ordem:
 | Plano do App Service (Linux, B1) | `plan-futurevet-562766` | `az appservice plan create --is-linux --sku B1` |
 | Web App Java 17 | `futurevet-562766` | `az webapp create --runtime "JAVA:17-java17"` |
 | HTTPS obrigatório, TLS 1.2, Always On, health check | — | `az webapp update` / `az webapp config set` |
-| Configurações da aplicação (perfil `oracle`, porta 80, Flyway etc.) | — | `az webapp config appsettings set` |
+| Configurações da aplicação (perfil `oracle`, porta 80, migrations desligadas etc.) | — | `az webapp config appsettings set` |
 | Logs da aplicação | — | `az webapp log config` |
 
 > A assinatura Azure for Students só aceita algumas regiões (`brazilsouth` é bloqueada). Para ver as permitidas: `az policy assignment list --query "[].parameters.listOfAllowedLocations.value" -o tsv`. Os recursos deste projeto estão em **`eastus`**. Se o Web App for criado com outro RM no nome, ajuste as variáveis `resourceGroup` e `webAppName` no topo do `azure-pipelines.yml`.
@@ -202,8 +203,10 @@ A organização do Azure DevOps é nova e não tem o agente gratuito da Microsof
    git pull
    AZP_URL=https://dev.azure.com/RM562766 AZP_TOKEN=<token> bash infra/criar-agente-vm.sh
    ```
-   O script cria a VM `vm-agente-futurevet-562766` (Standard_B2s, **sem nenhuma porta de entrada aberta**) e, via `az vm run-command`, roda o [`infra/agente-setup.sh`](infra/agente-setup.sh), que instala JDK 17, Maven e Azure CLI e registra o agente como serviço.
+   O script cria a VM `vm-agente-futurevet-562766` (2 vCPU — o script tenta vários tamanhos até achar um com capacidade na região —, **sem nenhuma porta de entrada aberta**) e, via `az vm run-command`, roda o [`infra/agente-setup.sh`](infra/agente-setup.sh), que instala JDK 17, Maven e Azure CLI e registra o agente como serviço.
+   > Neste projeto, `eastus` e `southcentralus` estavam sem capacidade para VMs de 2 vCPU; a VM ficou em **`mexicocentral`**, tamanho **`Standard_D2s_v3`** (rodado com `LOCATION=mexicocentral VM_SIZE=Standard_D2s_v3`). A região da VM não precisa ser a mesma do Web App.
 3. Confira em *Organization settings → Agent pools → Default → Agents*: **agente-futurevet** com status **Online**.
+4. Revogue o PAT (*Personal access tokens → Revoke*): depois de registrado, o agente usa credencial própria.
 
 Para economizar créditos depois da gravação: `az vm deallocate -g rg-futurevet-562766 -n vm-agente-futurevet-562766`. Para religar: `az vm start ...` com os mesmos parâmetros.
 
@@ -268,10 +271,10 @@ Rodar localmente: `./mvnw test` (Windows: `mvnw.cmd test`).
 URL: **https://futurevet-562766.azurewebsites.net**
 
 1. **Cadastre-se** (`/registro`) como tutor e faça login.
-2. **Create** — *Animais → + Cadastrar animal*: Thor · Cão · Labrador · 3 anos · Médio · 12,5 kg. Depois, *Vacinas → nova*: V10 para o Thor, data de hoje, próxima dose daqui a um ano.
+2. **Create** — *Animais → + Cadastrar animal*: Bolt · Cão · Labrador · 3 anos · Médio · 12,5 kg. Depois, *Vacinas → nova*: V10 para o Bolt, data de hoje, próxima dose daqui a um ano.
 3. **Read** — listas de animais e vacinas.
-4. **Update** — editar o Thor: peso 13,8.
-5. **Delete** — excluir a vacina V10 e depois o pet Thor (pets com histórico não podem ser excluídos, por isso a vacina sai primeiro).
+4. **Update** — editar o Bolt: peso 13,8.
+5. **Delete** — excluir a vacina V10 e depois o pet Bolt (pets com histórico não podem ser excluídos, por isso a vacina sai primeiro).
 
 Depois de **cada** operação, rode o SELECT correspondente de [`database/crud-evidencias.sql`](database/crud-evidencias.sql) no SQL Developer conectado ao Oracle da FIAP.
 

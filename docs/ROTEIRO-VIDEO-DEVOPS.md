@@ -7,7 +7,7 @@ Requisitos do vídeo: **720p ou mais**, áudio claro, **explicação por voz** (
 - [ ] Recursos criados com `infra/criar-recursos-azure.sh` e **um primeiro pipeline já executado com sucesso** (permissões do Variable Group, service connection e environment já liberadas — o pedido "Permit" não pode aparecer no meio do vídeo)
 - [ ] Abas abertas: **IDE** com o projeto · **GitHub** do repositório · **Azure DevOps** (Pipelines, Library) · **Portal Azure** no Web App `futurevet-562766` · **SQL Developer** conectado ao Oracle FIAP com `database/crud-evidencias.sql` aberto · **app** em `https://futurevet-562766.azurewebsites.net`
 - [ ] `git push` testado (credencial do GitHub salva na máquina)
-- [ ] Conta de tutor de teste criada **ou** pronta para criar no vídeo; pet "Thor" ainda **não** existe no banco
+- [ ] Conta de tutor de teste criada **ou** pronta para criar no vídeo; pet "Bolt" ainda **não** existe no banco (o schema já tem uma carga inicial com outros pets, inclusive um "Thor")
 - [ ] Microfone testado, resolução da tela em 1080p, zoom do navegador em 110–125%
 
 ---
@@ -90,11 +90,11 @@ Faça cada operação e, logo depois, rode o SELECT correspondente de `database/
 
 | Operação | Na aplicação | No SQL Developer |
 |---|---|---|
-| Create | Cadastre-se → *Animais → + Cadastrar animal*: Thor · Cão · Labrador · 3 anos · Médio · 12,5 kg | bloco 1 (aparece o Thor) |
-| Create (tabela relacionada) | *Vacinas → nova*: V10 para o Thor, data de hoje, próxima dose em 1 ano | bloco 1, segundo SELECT |
+| Create | Cadastre-se → *Animais → + Cadastrar animal*: Bolt · Cão · Labrador · 3 anos · Médio · 12,5 kg | bloco 1 (aparece o Bolt) |
+| Create (tabela relacionada) | *Vacinas → nova*: V10 para o Bolt, data de hoje, próxima dose em 1 ano | bloco 1, segundo SELECT |
 | Read | Lista de animais e de vacinas | bloco 2 |
-| Update | Editar o Thor: peso 13,8 | bloco 3 (peso atualizado) |
-| Delete | Excluir a vacina V10, depois excluir o Thor | bloco 4 (sem linhas) |
+| Update | Editar o Bolt: peso 13,8 | bloco 3 (peso atualizado) |
+| Delete | Excluir a vacina V10, depois excluir o Bolt | bloco 4 (sem linhas) |
 
 > Fale: "A aplicação está no Azure Web App, o dado está no Oracle da FIAP, e cada operação feita na tela aparece no banco pelo SELECT."
 

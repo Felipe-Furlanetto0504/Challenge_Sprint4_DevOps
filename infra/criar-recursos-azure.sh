@@ -63,8 +63,7 @@ az webapp config appsettings set \
     PORT=80 \
     HTTPS_ENABLED=true \
     SERVER_FORWARD_HEADERS_STRATEGY=framework \
-    DB_MIGRATIONS_ENABLED=true \
-    DB_EXISTENTE=false \
+    DB_MIGRATIONS_ENABLED=false \
     IA_URL=https://futurevet-ia.onrender.com \
     RABBITMQ_ENABLED=false \
     WEBSITES_CONTAINER_START_TIME_LIMIT=600 \
